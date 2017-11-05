@@ -1,0 +1,63 @@
+<resources>
+    <string name="app_name">Recipes</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <!--      Navigation drawer positions     -->
+    <string name="create_recipe">Create new recipe</string>
+    <string name="my_recipes">My recipes</string>
+    <string name="click_on_button_info">Click a \'+\' button to start creating Your recipe! Good luck!</string>
+
+    <!-- Recipe parts description -->
+    <string name="short_description">&#160;Short description</string>
+    <string name="ingredient">&#160;Ingredient</string>
+    <string name="how_to_cook">&#160;How to cook</string>
+    <string name="to_eat_with">&#160;To eat with</string>
+    <string name="large_headline">&#160;To eat with</string>
+    <string name="medium_headline">&#160;To eat with</string>
+
+
+
+    <!-- Top right menu -->
+    <string name="top_right_menu_save">Save</string>
+    <string name="top_right_menu_preview">Preview</string>
+    <string name="add_text_button">ADD</string>
+    <string name="button_recipe_part_text_normal">Normal</string>
+
+    <!-- Facebook auth strings -->
+    <string name="facebook_app_id">172991139927712</string>
+    <string name="fb_login_protocol_scheme">fb172991139927712</string>
+    <string name="loading">Loading</string>
+    <string name="action_logout">Log out</string>
+    <string name="delete_current_recipe_question">Are you sure you want to delete your recipe?</string>
+    <string name="negative_answer">No</string>
+    <string name="positive_answer">Yes</string>
+
+    <!-- Dropdown menu (spinner) to confirm deleting of a recipe part -->
+    <string name="i_am_sure">I\'m sure!</string>
+    <string name="nope">Nope!</string>
+
+    <string name="course_type_starter">Starter</string>
+    <string name="course_type_main_course">Main Course</string>
+    <string name="course_type_dessert">Dessert</string>
+    <string name="course_type_soup">Soup</string>
+    <string name="photo_fragment_skip_adding_photo">Skip this step</string>
+
+    <!-- Toast messages -->
+    <string name="toast_no_recipe_title">Title can not be empty!</string>
+    <string name="toast_recipe_title_too_short">Title is too short!</string>
+    <string name="toast_recipe_is_in_database">Recipe with such title is already in database!</string>
+    <string name="toast_recipe_file_does_not_exist">There is no recipe pdf to show!</string>
+    <string name="recipe_uploaded">Recipe successfully uploaded!</string>
+
+    <!-- content descriptions -->
+    <string name="application_title_empty_fragment_image_view_description">Welcome to Recipe Application!</string>
+    <string name="welcome_to_Recipe_app_in_empty_fragment">Welcome to Recipe application!</string>
+    <string name="click_an_icon_top_left_corner">Click an icon in the top-right corner and enjoy our app.</string>
+
+    <!-- Buttons in fragments-->
+    <string name="button_bottom_next_fragment">NEXT</string>
+    <string name="button_bottom_add_recipe_part">ADD</string>
+    <string name="button_bottom_save_edited_recipe_part">SAVE</string>
+    <string name="button_bottom_save_recipe">SAVE</string>
+
+</resources>

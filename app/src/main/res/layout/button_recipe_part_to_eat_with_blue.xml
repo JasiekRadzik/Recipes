@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Button_recipe_part_style"
+    android:layout_width="wrap_content"
+    android:layout_margin="4dp"
+    android:background="@drawable/button_recipe_part_states"
+    android:drawableLeft="@drawable/blue_oval"
+    android:singleLine="true"
+    android:textColor="@android:color/black"
+    android:text="@string/to_eat_with"
+    android:paddingLeft="@dimen/button_edit_recipe_part_padding"
+    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+    android:typeface="sans"></Button>

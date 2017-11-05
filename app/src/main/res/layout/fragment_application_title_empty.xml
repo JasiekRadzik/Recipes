@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relLayoutEmptyFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textViewWelcomeRecipe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="98dp"
+        android:text="@string/welcome_to_Recipe_app_in_empty_fragment"
+        android:textAlignment="center"
+        android:textColor="#9B9B9B"
+        android:textSize="38sp" />
+
+    <TextView
+        android:id="@+id/textViewSmallHint"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewWelcomeRecipe"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="164dp"
+        android:text="@string/click_an_icon_top_left_corner"
+        android:textAlignment="center"
+        android:textSize="19sp" />
+</RelativeLayout>

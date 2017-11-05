@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "245574442463",
+    "firebase_url": "https://recipes-309da.firebaseio.com",
+    "project_id": "recipes-309da",
+    "storage_bucket": "recipes-309da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:245574442463:android:8353984d8a83129f",
+        "android_client_info": {
+          "package_name": "com.example.radzik.recipes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "245574442463-arkkqt52rdfrd5rm9t7tn7rojt5ce2pc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.radzik.recipes",
+            "certificate_hash": "1ea1d72b42d5e8fc6aaffb4d0fafe1078fb0a2ff"
+          }
+        },
+        {
+          "client_id": "245574442463-uhl3lq2jsf70u30ete0m3dvouftir7rb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBxlFoLu9IKO8lA_21NeXleIM9ygk51g0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "245574442463-uhl3lq2jsf70u30ete0m3dvouftir7rb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

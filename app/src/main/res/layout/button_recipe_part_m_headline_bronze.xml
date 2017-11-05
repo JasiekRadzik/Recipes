@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Button_recipe_part_style"
+    android:layout_width="wrap_content"
+    android:layout_margin="4dp"
+    android:background="@drawable/button_recipe_part_states"
+    android:contextClickable="true"
+    android:drawableLeft="@drawable/bronze_oval"
+    android:linksClickable="true"
+    android:textColor="@android:color/black"
+    android:paddingLeft="@dimen/button_edit_recipe_part_padding"
+    android:singleLine="true"
+    android:text="@string/medium_headline"
+    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+    android:typeface="sans"></Button>

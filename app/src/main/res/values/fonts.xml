@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="light">fonts/FuturaPT-Light.otf</string>
+    <string name="medium">fonts/FuturaPT-Medium.otf</string>
+    <string name="heavy">fonts/FuturaPT-Heavy.otf</string>
+</resources>

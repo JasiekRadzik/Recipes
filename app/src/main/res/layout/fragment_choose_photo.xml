@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/buttonToOpenButtons"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_above="@+id/buttonChooseStyleFragment"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:background="@android:color/transparent" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayoutPhotoOptions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/verticalPlusLine"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="11dp">
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignWithParentIfMissing="false"
+            android:gravity="center_vertical|center_horizontal"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <ImageButton
+                android:id="@+id/imageButtonChooseFromGallery"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="20dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="false"
+                android:background="@color/white_transparent"
+                android:cropToPadding="false"
+                android:src="@drawable/icon_gallery" />
+
+            <ImageButton
+                android:id="@+id/imageButtonTakeAPhoto"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="20dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="false"
+                android:background="@color/white_transparent"
+                android:cropToPadding="false"
+                android:padding="20dp"
+                android:src="@drawable/icon_take_photo" />
+
+            <ImageButton
+                android:id="@+id/imageButtonCancelPhoto"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="false"
+                android:background="@color/white_transparent"
+                android:cropToPadding="false"
+                android:padding="20dp"
+                android:src="@drawable/icon_delete_photo" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imageViewDisplayImage"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_above="@+id/horizontalPlusLine"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:adjustViewBounds="false"
+        android:cropToPadding="true"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:scaleType="centerCrop" />
+
+    <Button
+        android:id="@+id/buttonChooseStyleFragment"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/button_add"
+        android:gravity="center"
+        android:text="NEXT"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+
+    <RelativeLayout
+        android:id="@+id/verticalPlusLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonChooseStyleFragment"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp">
+
+        <View
+            android:layout_width="30dp"
+            android:layout_height="2dp"
+            android:layout_centerHorizontal="true"
+            android:background="@color/light_grey" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/horizontalPlusLine"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_above="@+id/buttonChooseStyleFragment"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp">
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:background="@color/light_grey" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

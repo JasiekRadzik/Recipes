@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/editTextTestTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="recipe title"
+            android:inputType="textPersonName" />
+
+        <TextView
+            android:id="@+id/cookBookTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="cookBook"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/cookBookEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="cookbook title"
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/buttonTestLoadCookbookAndRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/md_red_900"
+            android:gravity="center"
+            android:text="UPLOAD COOKBOOK AND RECIPE"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/buttonTestLoadCookbook"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/com_facebook_blue"
+            android:gravity="center"
+            android:text="UPLOAD COOKBOOK"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/buttonTestRemoveRecipeFromCookbook"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/md_yellow_900"
+            android:gravity="center"
+            android:text="REMOVE RECIPE FROM COOKBOOK"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonTestLoadRecipe"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/button_add"
+        android:gravity="center"
+        android:text="UPLOAD RECIPE"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

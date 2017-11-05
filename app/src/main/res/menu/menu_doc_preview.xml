@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/doc_preview_icon"
+        android:title="@string/top_right_menu_save"
+        android:icon="@drawable/ic_show_doc_preview_24dp"
+        android:visible="true"
+        app:showAsAction="ifRoom"/>
+</menu>

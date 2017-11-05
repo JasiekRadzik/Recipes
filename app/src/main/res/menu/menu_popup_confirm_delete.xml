@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/yes_i_am_sure"
+        android:title="@string/i_am_sure"/>
+
+    <item
+        android:id="@+id/no_i_am_not"
+        android:title="@string/nope"/>
+
+
+</menu>

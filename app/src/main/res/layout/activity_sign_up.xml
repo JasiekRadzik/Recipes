@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.example.radzik.recipes.activity.SignUpActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="false"
+            android:cropToPadding="false"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/background_activity_login" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar_sign_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone" />
+
+
+        <Button
+            android:id="@+id/button_user_sign_up"
+            style="?android:textAppearanceSmall"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:background="#69B3BB"
+            android:onClick="onSignUpClicked"
+            android:padding="10dp"
+            android:text="Sign Up Now"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/email_sign_up_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="50dp">
+
+            <TextView
+                android:id="@+id/text_view_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="54dp"
+                android:layout_marginTop="15dp"
+                android:elevation="0dp"
+                android:fontFamily="@string/roboto_thin_typeface_asset_path"
+                android:text="USER NAME"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/edit_text_username"
+                android:inputType="textPersonName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:backgroundTint="@android:color/transparent"
+                android:fontFamily="@string/roboto_condensed_typeface_asset_path"/>
+
+            <TextView
+                android:id="@+id/text_view_phone_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="54dp"
+                android:layout_marginTop="15dp"
+                android:elevation="0dp"
+                android:fontFamily="@string/roboto_thin_typeface_asset_path"
+                android:text="PHONE NUMBER"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/edit_text_phone_number"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:backgroundTint="@android:color/transparent"
+                android:fontFamily="@string/roboto_condensed_typeface_asset_path"
+                />
+
+
+            <TextView
+                android:id="@+id/text_view_new_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="54dp"
+                android:layout_marginTop="15dp"
+                android:elevation="0dp"
+                android:fontFamily="@string/roboto_thin_typeface_asset_path"
+                android:text="EMAIL"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"  />
+
+            <EditText
+                android:id="@+id/edit_text_new_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:backgroundTint="@android:color/transparent"
+                android:fontFamily="@string/roboto_condensed_typeface_asset_path"
+                android:inputType="textEmailAddress" />
+
+
+            <TextView
+                android:id="@+id/text_view_new_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="54dp"
+                android:layout_marginTop="15dp"
+                android:elevation="0dp"
+                android:fontFamily="@string/roboto_thin_typeface_asset_path"
+                android:text="PASSWORD"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/edit_text_new_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:backgroundTint="@android:color/transparent"
+                android:fontFamily="@string/roboto_condensed_typeface_asset_path"
+                android:inputType="textPassword" />
+
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="50dp" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>
