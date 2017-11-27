@@ -60,4 +60,13 @@
     <string name="button_bottom_save_edited_recipe_part">SAVE</string>
     <string name="button_bottom_save_recipe">SAVE</string>
 
+    <!-- add recipe title fragment -->
+    <string name="title_large">TITLE</string>
+    <string name="subheading_large">SUBHEADING</string>
+    <string name="course_type_large">COURSE TYPE</string>
+    <string name="cookbook_large">COOKBOOK</string>
+    <string name="hint_ingredient_description">Ingredient description</string>
+    <string name="hint_ingredient_amount">Ingredient amount</string>
+
+
 </resources>

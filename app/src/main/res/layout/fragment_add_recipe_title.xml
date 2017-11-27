@@ -6,14 +6,15 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/linearLayoutContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="104dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
-
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="false"
+        android:layout_marginTop="70dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/text_view_title"
@@ -23,7 +24,7 @@
             android:layout_marginTop="15dp"
             android:elevation="0dp"
             android:fontFamily="sans-serif"
-            android:text="RECIPE TITLE"
+            android:text="@string/title_large"
             android:textColor="@android:color/black"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -31,13 +32,48 @@
         <EditText
             android:id="@+id/edit_text_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="46dp"
             android:layout_alignLeft="@+id/text_view_password"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:backgroundTint="@android:color/transparent"
             android:fontFamily="@string/roboto_condensed_typeface_asset_path"
             android:inputType="textPersonName"
+            android:maxLength="25"
+            android:paddingBottom="5dp"
+            android:paddingTop="0dp"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/white"
+            android:textSize="20sp" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="20dp" />
+
+        <TextView
+            android:id="@+id/text_view_subheading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="54dp"
+            android:layout_marginTop="15dp"
+            android:elevation="0dp"
+            android:fontFamily="sans-serif"
+            android:text="@string/subheading_large"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_text_subheading"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:backgroundTint="@android:color/transparent"
+            android:fontFamily="@string/roboto_condensed_typeface_asset_path"
+            android:inputType="textPersonName"
+            android:maxLength="50"
             android:paddingBottom="5dp"
             android:paddingTop="0dp"
             android:textColor="@android:color/black"
@@ -56,16 +92,16 @@
             android:layout_marginTop="15dp"
             android:elevation="0dp"
             android:fontFamily="sans-serif"
-            android:text="COURSE TYPE"
+            android:text="@string/course_type_large"
             android:textColor="@android:color/black"
             android:textSize="14sp"
             android:textStyle="bold" />
 
         <Spinner
             android:id="@+id/addRecipeCourseTypeCookbookSpinner"
+            style="@style/Widget.AppCompat.Spinner.Underlined"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_alignLeft="@+id/text_view_password"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:backgroundTint="@android:color/transparent"
@@ -74,8 +110,7 @@
             android:paddingTop="0dp"
             android:textColor="@android:color/black"
             android:textColorHint="@color/light_grey"
-            android:textSize="30sp"
-            style="@style/Widget.AppCompat.Spinner.Underlined"/>
+            android:textSize="30sp" />
 
         <Space
             android:layout_width="1dp"
@@ -89,16 +124,16 @@
             android:layout_marginTop="15dp"
             android:elevation="0dp"
             android:fontFamily="sans-serif"
-            android:text="COOKBOOK"
+            android:text="@string/cookbook_large"
             android:textColor="@android:color/black"
             android:textSize="14sp"
             android:textStyle="bold" />
 
         <Spinner
             android:id="@+id/addRecipeTitleCookbookSpinner"
+            style="@style/Widget.AppCompat.Spinner.Underlined"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_alignLeft="@+id/text_view_password"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:backgroundTint="@android:color/transparent"
@@ -107,8 +142,7 @@
             android:paddingTop="0dp"
             android:textColor="@android:color/black"
             android:textColorHint="@color/light_grey"
-            android:textSize="30sp"
-            style="@style/Widget.AppCompat.Spinner.Underlined"/>
+            android:textSize="30sp" />
 
         <Space
             android:layout_width="1dp"
@@ -120,8 +154,10 @@
         android:id="@+id/buttonChooseStyleFragment"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_alignBottom="@+id/linearLayoutContainer"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
+        android:layout_alignWithParentIfMissing="false"
         android:background="@color/button_add"
         android:gravity="center"
         android:text="@string/button_bottom_next_fragment"

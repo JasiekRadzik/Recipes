@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.jmedeisis:draglinearlayout-1.1.0">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/draglinearlayout-1.1.0.aar/b25547b0d2ae8a10fe31601f41e44bd5/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/draglinearlayout-1.1.0.aar/b25547b0d2ae8a10fe31601f41e44bd5/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jmedeisis/draglinearlayout/1.1.0/4c98712cc56e4c330554fe416604f30184d75720/draglinearlayout-1.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

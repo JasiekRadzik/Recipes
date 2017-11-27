@@ -70,11 +70,13 @@
     <ImageView
         android:id="@+id/imageViewDisplayImage"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="300dp"
         android:layout_above="@+id/horizontalPlusLine"
         android:layout_alignWithParentIfMissing="false"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:adjustViewBounds="false"
         android:cropToPadding="true"
         android:paddingLeft="20dp"
@@ -104,7 +106,7 @@
 
         <View
             android:layout_width="30dp"
-            android:layout_height="2dp"
+            android:layout_height="4dp"
             android:layout_centerHorizontal="true"
             android:background="@color/light_grey" />
 
@@ -119,7 +121,7 @@
         android:layout_marginBottom="16dp">
 
         <View
-            android:layout_width="2dp"
+            android:layout_width="4dp"
             android:layout_height="50dp"
             android:layout_centerHorizontal="true"
             android:background="@color/light_grey" />

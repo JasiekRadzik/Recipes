@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/relative"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@android:color/white">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/linearLayoutMain"
@@ -10,18 +11,40 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@android:color/white"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/mainEditText"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:backgroundTint="@android:color/transparent"
-            android:paddingLeft="16dp"
-            android:textColor="@android:color/black"
-            android:paddingRight="16dp"
-            android:paddingTop="8dp" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/mainEditText"
+                android:layout_width="260dp"
+                android:layout_height="110dp"
+                android:layout_weight="1"
+                android:backgroundTint="@android:color/transparent"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="8dp"
+                android:textColor="@android:color/black" />
+
+            <EditText
+                android:id="@+id/ingredientAmountEditText"
+                android:layout_width="100dp"
+                android:layout_height="110dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_weight="1"
+                android:background="@drawable/ingredient_edit_text_bckg"
+                android:backgroundTint="@android:color/transparent"
+                android:hint="@string/hint_ingredient_amount"
+                android:singleLine="false"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:visibility="visible" />
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
@@ -57,14 +80,6 @@
                 <include
                     android:id="@+id/button_to_eat_with"
                     layout="@layout/button_recipe_part_to_eat_with_blue" />
-
-                <include
-                    android:id="@+id/button_headline_M"
-                    layout="@layout/button_recipe_part_m_headline_bronze" />
-
-                <include
-                    android:id="@+id/button_headline_L"
-                    layout="@layout/button_recipe_part_l_headline_red" />
 
 
             </LinearLayout>
