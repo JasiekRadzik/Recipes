@@ -1,7 +1,7 @@
 package com.example.radzik.recipes.fragment
 
 import android.app.Fragment
-import android.app.FragmentTransaction
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -10,21 +10,13 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.Button
-import android.widget.Gallery
-import android.widget.ImageView
-import android.widget.RelativeLayout
 
 import com.example.radzik.recipes.R
 import com.example.radzik.recipes.adapters.ChooseLayoutImagesAdapter
 import com.example.radzik.recipes.database.ConstantsForFragmentsSelection
 import com.example.radzik.recipes.database.ConstantsForRecipeDocumentStyles
 import com.example.radzik.recipes.database.RecipeManager
-import com.github.barteksc.pdfviewer.PDFView
-import com.github.barteksc.pdfviewer.ScrollBar
-
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.synthetic.main.fragment_choose_doc_layout.*
 
 /**
  * Created by Radzik on 12.10.2017.
@@ -32,99 +24,79 @@ import butterknife.ButterKnife
 
 class ChooseDocumentLayoutFragment : Fragment() {
 
-    @BindView(R.id.displayLayoutImgView)
-    internal var mDisplayLayoutImgView: ImageView? = null
-
-    @BindView(R.id.buttonOpenNextFragment)
-    internal var mButtonOpenNextFragment: Button? = null
-
-    internal var mPdfView: PDFView
-    internal var mScrollBar: ScrollBar
-
-    internal var mChooseDocStyleRelativeLayout: RelativeLayout
-    internal var mShowPreviewRelativeLayout: RelativeLayout
-
     internal var mIsShowPreviewVisible = false
-
-    internal var mGallery: Gallery
 
     init {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle): View? {
-        val view = inflater.inflate(R.layout.fragment_choose_doc_layout, container, false)
-        ButterKnife.bind(this, view)
-
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
 
-        mChooseDocStyleRelativeLayout = view.findViewById(R.id.chooseDocStyleRelativeLayout) as RelativeLayout
-        mShowPreviewRelativeLayout = view.findViewById(R.id.showPreviewRelativeLayout) as RelativeLayout
-        mPdfView = view.findViewById(R.id.pdfView) as PDFView
-        mScrollBar = view.findViewById(R.id.pdfScrollBar) as ScrollBar
-        mPdfView.setScrollBar(mScrollBar)
+        return inflater?.inflate(R.layout.fragment_choose_doc_layout, container, false)
+    }
 
-        mShowPreviewRelativeLayout.visibility = View.GONE
-        mChooseDocStyleRelativeLayout.visibility = View.VISIBLE
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        pdfView.setScrollBar(pdfScrollBar)
+
+        showPreviewRelativeLayout.visibility = View.GONE
+        chooseDocStyleRelativeLayout.visibility = View.VISIBLE
 
         // set currently opened fragment as CHOOSE DOC LAYOUT FRAGMENT
         RecipeManager.instance.setCurrentFragment(ConstantsForFragmentsSelection.CHOOSE_DOCUMENT_LAYOUT_FRAGMENT)
 
-        val gallery = view.findViewById(R.id.chooseDocLayoutFromList) as Gallery
-        mGallery = gallery
-
-        gallery.setSpacing(3)
+        chooseDocLayoutFromList.setSpacing(3)
 
         val mChooseLayoutImagesAdapter = ChooseLayoutImagesAdapter(context)
-        gallery.adapter = mChooseLayoutImagesAdapter
+        chooseDocLayoutFromList.adapter = mChooseLayoutImagesAdapter
 
         // checks whether recipe has a layout chosen
-        if (RecipeManager.instance.currentOrCreateNewRecipe.documentStyle != 0) { // layout already chosen
-            gallery.setSelection(RecipeManager.instance.currentOrCreateNewRecipe.documentStyle)
-            mDisplayLayoutImgView!!.setImageResource(mChooseLayoutImagesAdapter.mImageIds[RecipeManager.instance.currentOrCreateNewRecipe.documentStyle])
+        if (RecipeManager.instance.currentOrNewRecipe.documentStyle != 0) { // layout already chosen
+            chooseDocLayoutFromList.setSelection(RecipeManager.instance.currentOrNewRecipe.documentStyle)
+            displayLayoutImgView.setImageResource(mChooseLayoutImagesAdapter.mImageIds[RecipeManager.instance.currentOrNewRecipe.documentStyle])
         } else { // layout NOT chosen before
-            gallery.setSelection(0)
-            mDisplayLayoutImgView!!.setImageResource(mChooseLayoutImagesAdapter.mImageIds[0])
+            chooseDocLayoutFromList.setSelection(0)
+            displayLayoutImgView.setImageResource(mChooseLayoutImagesAdapter.mImageIds[0])
         }
 
-        mDisplayLayoutImgView!!.setOnClickListener {
+        displayLayoutImgView.setOnClickListener {
             if (!mIsShowPreviewVisible) { // opens document preview
                 mIsShowPreviewVisible = true
-                mChooseDocStyleRelativeLayout.visibility = View.GONE
-                mShowPreviewRelativeLayout.visibility = View.VISIBLE
+                chooseDocStyleRelativeLayout.visibility = View.GONE
+                showPreviewRelativeLayout.visibility = View.VISIBLE
 
-                when (gallery.selectedItemPosition) {
-                    0 -> mPdfView.fromAsset("light_bronze_preview.pdf").load()
-                    1 -> mPdfView.fromAsset("grey_orange_preview.pdf").load()
-                    2 -> mPdfView.fromAsset("blue_red_preview.pdf").load()
-                    3 -> mPdfView.fromAsset("purple_preview.pdf").load()
+                when (chooseDocLayoutFromList.selectedItemPosition) {
+                    0 -> pdfView.fromAsset("light_bronze_preview.pdf").load()
+                    1 -> pdfView.fromAsset("grey_orange_preview.pdf").load()
+                    2 -> pdfView.fromAsset("blue_red_preview.pdf").load()
+                    3 -> pdfView.fromAsset("purple_preview.pdf").load()
                 }
 
             } else if (mIsShowPreviewVisible) { // closes document preview
                 mIsShowPreviewVisible = false
-                mChooseDocStyleRelativeLayout.visibility = View.VISIBLE
-                mShowPreviewRelativeLayout.visibility = View.GONE
+                chooseDocStyleRelativeLayout.visibility = View.VISIBLE
+                showPreviewRelativeLayout.visibility = View.GONE
             }
         }
 
 
-        gallery.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            mDisplayLayoutImgView!!.setImageResource(mChooseLayoutImagesAdapter.mImageIds[position])
+        chooseDocLayoutFromList.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            displayLayoutImgView.setImageResource(mChooseLayoutImagesAdapter.mImageIds[position])
 
             if (position == ConstantsForRecipeDocumentStyles.RECIPE_LIGHT_BRONZE_INGREDIENTS_LEFT) {
-                RecipeManager.instance.currentOrCreateNewRecipe.documentStyle = position
+                RecipeManager.instance.currentOrNewRecipe.documentStyle = position
             } else if (position == ConstantsForRecipeDocumentStyles.RECIPE_GREY_ORANGE_INGREDIENTS_LEFT) {
-                RecipeManager.instance.currentOrCreateNewRecipe.documentStyle = position
+                RecipeManager.instance.currentOrNewRecipe.documentStyle = position
             } else if (position == ConstantsForRecipeDocumentStyles.RECIPE_BLUE_RED_INGREDIENTS_LEFT) {
-                RecipeManager.instance.currentOrCreateNewRecipe.documentStyle = position
+                RecipeManager.instance.currentOrNewRecipe.documentStyle = position
             } else if (position == ConstantsForRecipeDocumentStyles.RECIPE_PURPLE_INGREDIENTS_LEFT) {
-                RecipeManager.instance.currentOrCreateNewRecipe.documentStyle = position
+                RecipeManager.instance.currentOrNewRecipe.documentStyle = position
             }
         }
 
-        mButtonOpenNextFragment!!.setOnClickListener { openNextFragment(AddRecipeTitleFragment()) }
-
-        return view
+        buttonOpenNextFragment.setOnClickListener { openNextFragment(AddRecipeTitleFragment()) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -138,19 +110,19 @@ class ChooseDocumentLayoutFragment : Fragment() {
                 run {
                     if (!mIsShowPreviewVisible) { // opens document preview
                         mIsShowPreviewVisible = true
-                        mChooseDocStyleRelativeLayout.visibility = View.GONE
-                        mShowPreviewRelativeLayout.visibility = View.VISIBLE
+                        chooseDocStyleRelativeLayout.visibility = View.GONE
+                        showPreviewRelativeLayout.visibility = View.VISIBLE
 
-                        when (mGallery.selectedItemPosition) {
-                            0 -> mPdfView.fromAsset("light_bronze_preview.pdf").load()
-                            1 -> mPdfView.fromAsset("grey_orange_preview.pdf").load()
-                            2 -> mPdfView.fromAsset("blue_red_preview.pdf").load()
-                            3 -> mPdfView.fromAsset("purple_preview.pdf").load()
+                        when (chooseDocLayoutFromList.selectedItemPosition) {
+                            0 -> pdfView.fromAsset("light_bronze_preview.pdf").load()
+                            1 -> pdfView.fromAsset("grey_orange_preview.pdf").load()
+                            2 -> pdfView.fromAsset("blue_red_preview.pdf").load()
+                            3 -> pdfView.fromAsset("purple_preview.pdf").load()
                         }
                     } else if (mIsShowPreviewVisible) { // closes document preview
                         mIsShowPreviewVisible = false
-                        mChooseDocStyleRelativeLayout.visibility = View.VISIBLE
-                        mShowPreviewRelativeLayout.visibility = View.GONE
+                        chooseDocStyleRelativeLayout.visibility = View.VISIBLE
+                        showPreviewRelativeLayout.visibility = View.GONE
                     }
                 }
                 return super.onOptionsItemSelected(item)

@@ -1,8 +1,6 @@
 package com.example.radzik.recipes.database.firebase
 
 import android.app.Activity
-import android.content.ContentResolver
-import android.content.DialogInterface
 import android.net.Uri
 import android.support.v7.app.AlertDialog
 import android.util.Log
@@ -15,8 +13,6 @@ import com.example.radzik.recipes.database.Recipe
 import com.example.radzik.recipes.database.RecipeImage
 import com.example.radzik.recipes.database.RecipeManager
 import com.example.radzik.recipes.utils.PhotosIdCreatorUtils
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -24,9 +20,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.OnProgressListener
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
 
 import java.util.ArrayList
 import java.util.HashMap
@@ -90,26 +83,26 @@ class GeneralDataManager private constructor() {
     private var mRecipeUploadedListener: OnRecipeUploadedListener? = null
 
     // used to check if there is a recipe with a given title and updates users recipes list
-    internal var recipeUpdatesListener: ValueEventListener = object : ValueEventListener {
+    private var recipeUpdatesListener: ValueEventListener = object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) {
             mCurrentUserRecipesList = ArrayList()
             mCurrentUserRecipeTitleKeyMap = HashMap()
 
             for (snapshot in dataSnapshot.children) {
                 val recipe1 = snapshot.getValue(Recipe::class.java)
-                mCurrentUserRecipesList!!.add(recipe1)
-                mCurrentUserRecipeTitleKeyMap!!.put(recipe1!!.title, snapshot.key)
+                if (recipe1 != null) {
+                    mCurrentUserRecipesList!!.add(recipe1)
+                }
+                mCurrentUserRecipeTitleKeyMap!!.put(recipe1!!.title!!, snapshot.key)
             }
 
         }
 
-        override fun onCancelled(databaseError: DatabaseError) {
-
-        }
+        override fun onCancelled(databaseError: DatabaseError) {}
     }
 
     // used to check if there is a cookbook with a given title and updates users cookbooks list
-    internal var cookBookKeysInUserBooksUpdatesListener: ValueEventListener = object : ValueEventListener {
+    private var cookBookKeysInUserBooksUpdatesListener: ValueEventListener = object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) {
             mCurrentUserCookBookKeyTitleMap = HashMap()
 
@@ -117,7 +110,9 @@ class GeneralDataManager private constructor() {
                 val key1 = snapshot.key
                 val title1 = snapshot.getValue(String::class.java)
 
-                mCurrentUserCookBookKeyTitleMap!!.put(key1, title1)
+                if (title1 != null) {
+                    mCurrentUserCookBookKeyTitleMap!!.put(key1, title1)
+                }
             }
         }
 
@@ -135,26 +130,23 @@ class GeneralDataManager private constructor() {
                 if (mCurrentUserCookBookKeyTitleMap!!.containsKey(cookBookKey1)) {
 
                     val cookbook1 = snapshotOfCookBooks.getValue(CookBook::class.java)
-                    for (snapshotOfRecipesInsideCookBooks in snapshotOfCookBooks.children) {
+                    snapshotOfCookBooks.children
+                            .filter { it.key != "title" }
+                            .map { it.getValue(Recipe::class.java) }
+                            .forEach {
+                                if (!mRecipesInCookBooksMap!!.containsKey(cookbook1)) {
 
-                        if (snapshotOfRecipesInsideCookBooks.key != "title") {
-                            val recipe1 = snapshotOfRecipesInsideCookBooks.getValue(Recipe::class.java)
-                            if (!mRecipesInCookBooksMap!!.containsKey(cookbook1)) {
+                                    if (cookbook1 != null) {
+                                        mRecipesInCookBooksMap!!.put(cookbook1, ArrayList())
+                                    }
+                                    if (it != null) {
+                                        mRecipesInCookBooksMap!![cookbook1]!!.add(it)
+                                    }
+                                } else {
 
-                                mRecipesInCookBooksMap!!.put(cookbook1, ArrayList())
-                                mRecipesInCookBooksMap!![cookbook1].add(recipe1)
-                            } else {
-
-                                mRecipesInCookBooksMap!![cookbook1].add(recipe1)
+                                    mRecipesInCookBooksMap!![cookbook1]!!.add(it!!)
+                                }
                             }
-                        }
-                    }
-                }
-            }
-
-            for (logCookBook in mRecipesInCookBooksMap!!.keys) {
-                for (logRecipe in mRecipesInCookBooksMap!![logCookBook]) {
-                    Log.e("R inside C", "CookBook: " + "[" + logCookBook.title + "]" + " contains Recipe: " + "[" + logRecipe.title + "]")
                 }
             }
 
@@ -171,11 +163,11 @@ class GeneralDataManager private constructor() {
     }
 
     val currentUserCookBookKeyTitleMap: HashMap<String, String>
-        get() = mCurrentUserCookBookKeyTitleMap as HashMap<String, String>?
+        get() = (mCurrentUserCookBookKeyTitleMap as HashMap<String, String>?)!!
 
 
     val recipesInCookBooksMap: HashMap<CookBook, ArrayList<Recipe>>
-        get() = mRecipesInCookBooksMap as HashMap<CookBook, ArrayList<Recipe>>?
+        get() = (mRecipesInCookBooksMap as HashMap<CookBook, ArrayList<Recipe>>?)!!
 
     init {
         mCurrentUserCookBookKeyTitleMap = HashMap()
@@ -226,7 +218,7 @@ class GeneralDataManager private constructor() {
 
                         //adding an upload to firebase database
                         val uploadId = mDatabasePhotosUploads.push().key
-                        RecipeManager.instance.currentOrCreateNewRecipe.photoId = uploadId
+                        RecipeManager.instance.currentOrNewRecipe.photoId = uploadId
                         mDatabasePhotosUploads.child(uploadId).setValue(upload)
                     }
                     .addOnFailureListener { Log.e("Photo", "Photo NOT uploaded") }
@@ -237,7 +229,7 @@ class GeneralDataManager private constructor() {
     }
 
     private fun uploadRecipeFile(activity: Activity): String {
-        val recipe = RecipeManager.instance.currentOrCreateNewRecipe
+        val recipe = RecipeManager.instance.currentOrNewRecipe
         val userUid = FirebaseAuth.getInstance().currentUser!!.uid
 
         // checks if recipe is not null (IT SHOULD NOT BE NULL)
@@ -307,10 +299,10 @@ class GeneralDataManager private constructor() {
             }
         }
 
-        return mRecipeKey
+        return mRecipeKey!!
     }
 
-    fun uploadCookBook(activity: Activity, cookBook: CookBook?): String {
+    fun uploadCookBook(activity: Activity, cookBook: CookBook?): String? {
         if (cookBook != null) {
 
             var cookBookHasSameTitle: Boolean? = false
@@ -346,7 +338,7 @@ class GeneralDataManager private constructor() {
 
                     // Uploads key to this cookbook to "users" >> "user" >> "books"
                     mDatabaseUsersUploads.child(FirebaseAuth.getInstance().currentUser!!.uid).child("books").child(mCookBookKey!!).setValue(cookBook.title).addOnSuccessListener {
-                        mCurrentUserCookBookKeyTitleMap!!.put(mCookBookKey, cookBook.title)
+                        mCurrentUserCookBookKeyTitleMap!!.put(mCookBookKey!!, cookBook.title!!)
 
                         mIfCookBookUploadedListener!!.OnCookBookUploaded(mCurrentUserCookBookKeyTitleMap as HashMap<String, String>?, cookBook.title)
                     }.addOnFailureListener { Log.e("Cookbook KEY", "Cookbook KEY NOT uploaded to users/user/books/") }
@@ -411,7 +403,7 @@ class GeneralDataManager private constructor() {
 
         // finds and puts in an array cookbook keys in the database
         for (cookBook1 in mRecipesInCookBooksMap!!.keys) {
-            for (recipe1 in mRecipesInCookBooksMap!![cookBook1]) {
+            for (recipe1 in mRecipesInCookBooksMap!![cookBook1]!!) {
                 if (recipeToBeRemoved.title == recipe1.title) {
                     for (cookBookKey in mCurrentUserCookBookKeyTitleMap!!.keys) {
                         if (mCurrentUserCookBookKeyTitleMap!![cookBookKey] == cookBook1.title) {
@@ -443,8 +435,10 @@ class GeneralDataManager private constructor() {
 
                 for (snapshot in dataSnapshot.children) {
                     val recipe1 = snapshot.getValue(Recipe::class.java)
-                    mCurrentUserRecipesList!!.add(recipe1)
-                    mCurrentUserRecipeTitleKeyMap!!.put(recipe1!!.title, snapshot.key)
+                    if (recipe1 != null) {
+                        mCurrentUserRecipesList!!.add(recipe1)
+                    }
+                    recipe1!!.title?.let { mCurrentUserRecipeTitleKeyMap!!.put(it, snapshot.key) }
                 }
             }
 
@@ -466,10 +460,12 @@ class GeneralDataManager private constructor() {
                             if (snapshotOfRecipesInsideCookBooks.value === Recipe::class.java) {
                                 val recipe1 = snapshotOfRecipesInsideCookBooks.getValue(Recipe::class.java)
                                 if (!mRecipesInCookBooksMap!!.containsKey(cookbook1)) {
-                                    mRecipesInCookBooksMap!!.put(cookbook1, ArrayList())
-                                    mRecipesInCookBooksMap!![cookbook1].add(recipe1)
+                                    if (cookbook1 != null) {
+                                        mRecipesInCookBooksMap!!.put(cookbook1, ArrayList())
+                                    }
+                                    mRecipesInCookBooksMap!![cookbook1]!!.add(recipe1!!)
                                 } else {
-                                    mRecipesInCookBooksMap!![cookbook1].add(recipe1)
+                                    mRecipesInCookBooksMap!![cookbook1]!!.add(recipe1!!)
                                 }
                             }
 
@@ -478,7 +474,7 @@ class GeneralDataManager private constructor() {
                 }
 
                 for (logCookBook in mRecipesInCookBooksMap!!.keys) {
-                    for (logRecipe in mRecipesInCookBooksMap!![logCookBook]) {
+                    for (logRecipe in mRecipesInCookBooksMap!![logCookBook]!!) {
                         Log.e("R inside C", "CookBook " + logCookBook.title + " containts Recipe: " + logRecipe.title)
                     }
                 }
@@ -501,48 +497,39 @@ class GeneralDataManager private constructor() {
                 for (snapshot in dataSnapshot.children) {
                     val key1 = snapshot.key
                     val title1 = snapshot.getValue(String::class.java)
+                    Log.e("Cookbook key and title", "Cookbook key: $key1, title: $title1")
 
-                    mCurrentUserCookBookKeyTitleMap!!.put(key1, title1)
+                    mCurrentUserCookBookKeyTitleMap!!.put(key1, title1!!)
                 }
                 Log.e("CurrentUserCookBook", "Updated" + mCurrentUserCookBookKeyTitleMap!!.keys)
             }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-
-            }
+            override fun onCancelled(databaseError: DatabaseError) {}
         })
 
-        if (staticIntFromGeneralUploader == GeneralDataManager.RECIPE_UPDATES_LISTENER) {
-            mDatabaseRecipesUploadsBelowUser!!.addValueEventListener(recipeUpdatesListener)
-
-        } else if (staticIntFromGeneralUploader == GeneralDataManager.COOKBOOK_UPDATES_LISTENER) {
-            mDatabaseCookBooksKeyUploadsInUserBooks.addValueEventListener(cookBookKeysInUserBooksUpdatesListener)
-
-        } else if (staticIntFromGeneralUploader == GeneralDataManager.RECIPE_IN_COOKBOOK_UPDATES_LISTENER) {
-            mDatabaseCookBooksUploads.addValueEventListener(cookBookDatabaseListener)
-
-        } else if (staticIntFromGeneralUploader == GeneralDataManager.ATTACH_ALL_LISTENERS) {
-            mDatabaseRecipesUploadsBelowUser!!.addValueEventListener(recipeUpdatesListener)
-            mDatabaseCookBooksKeyUploadsInUserBooks.addValueEventListener(cookBookKeysInUserBooksUpdatesListener)
-            mDatabaseCookBooksUploads.addValueEventListener(cookBookDatabaseListener)
+        when (staticIntFromGeneralUploader) {
+            GeneralDataManager.RECIPE_UPDATES_LISTENER -> mDatabaseRecipesUploadsBelowUser!!.addValueEventListener(recipeUpdatesListener)
+            GeneralDataManager.COOKBOOK_UPDATES_LISTENER -> mDatabaseCookBooksKeyUploadsInUserBooks.addValueEventListener(cookBookKeysInUserBooksUpdatesListener)
+            GeneralDataManager.RECIPE_IN_COOKBOOK_UPDATES_LISTENER -> mDatabaseCookBooksUploads.addValueEventListener(cookBookDatabaseListener)
+            GeneralDataManager.ATTACH_ALL_LISTENERS -> {
+                mDatabaseRecipesUploadsBelowUser!!.addValueEventListener(recipeUpdatesListener)
+                mDatabaseCookBooksKeyUploadsInUserBooks.addValueEventListener(cookBookKeysInUserBooksUpdatesListener)
+                mDatabaseCookBooksUploads.addValueEventListener(cookBookDatabaseListener)
+            }
         }
 
     }
 
     fun detachListeners(staticIntFromGeneralUploader: Int) {
-        if (staticIntFromGeneralUploader == GeneralDataManager.RECIPE_UPDATES_LISTENER) {
-            mDatabaseRecipesUploadsBelowUser!!.addValueEventListener(null)
-
-        } else if (staticIntFromGeneralUploader == GeneralDataManager.COOKBOOK_UPDATES_LISTENER) {
-            mDatabaseCookBooksKeyUploadsInUserBooks.addValueEventListener(null)
-
-        } else if (staticIntFromGeneralUploader == GeneralDataManager.RECIPE_IN_COOKBOOK_UPDATES_LISTENER) {
-            mDatabaseCookBooksUploads.addValueEventListener(null)
-
-        } else if (staticIntFromGeneralUploader == GeneralDataManager.DETACH_ALL_LISTENERS) {
-            mDatabaseRecipesUploadsBelowUser!!.addValueEventListener(null)
-            mDatabaseCookBooksKeyUploadsInUserBooks.addValueEventListener(null)
-            mDatabaseCookBooksUploads.addValueEventListener(null)
+        when(staticIntFromGeneralUploader) {
+            GeneralDataManager.RECIPE_UPDATES_LISTENER -> mDatabaseRecipesUploadsBelowUser!!.addValueEventListener(null)
+            GeneralDataManager.COOKBOOK_UPDATES_LISTENER -> mDatabaseCookBooksKeyUploadsInUserBooks!!.addValueEventListener(null)
+            GeneralDataManager.RECIPE_IN_COOKBOOK_UPDATES_LISTENER -> mDatabaseCookBooksUploads!!.addValueEventListener(null)
+            GeneralDataManager.DETACH_ALL_LISTENERS -> {
+                mDatabaseRecipesUploadsBelowUser!!.addValueEventListener(null)
+                mDatabaseCookBooksKeyUploadsInUserBooks.addValueEventListener(null)
+                mDatabaseCookBooksUploads.addValueEventListener(null)
+            }
         }
     }
 
@@ -559,11 +546,9 @@ class GeneralDataManager private constructor() {
         var returnKey = ""
 
         if (mCurrentUserCookBookKeyTitleMap != null || !mCurrentUserCookBookKeyTitleMap!!.isEmpty()) {
-            for (key in mCurrentUserCookBookKeyTitleMap!!.keys) {
-                if (mCurrentUserCookBookKeyTitleMap!![key] == title) {
-                    returnKey = key
-                }
-            }
+            mCurrentUserCookBookKeyTitleMap!!.keys
+                    .filter { mCurrentUserCookBookKeyTitleMap!![it] == title }
+                    .forEach { returnKey = it }
         }
 
         return returnKey
@@ -585,7 +570,7 @@ class GeneralDataManager private constructor() {
 
     // mRecipesInCookBooksMap listener
     interface OnRecipesUpdateListener {
-        fun onMapChanged(map: HashMap<CookBook, ArrayList<Recipe>>)
+        fun onMapChanged(map: HashMap<CookBook, ArrayList<Recipe>>?)
     }
 
     fun setOnRecipesUpdateListener(listener: OnRecipesUpdateListener) {
@@ -594,7 +579,7 @@ class GeneralDataManager private constructor() {
 
     // OnCookBookUploaded listener
     interface OnCookBookUploadedListener {
-        fun OnCookBookUploaded(cookBooksMap: HashMap<String, String>, cookBookTitle: String?)
+        fun OnCookBookUploaded(cookBooksMap: HashMap<String, String>?, cookBookTitle: String?)
     }
 
     fun setOnCookBookUploadedListener(listener: OnCookBookUploadedListener) {
@@ -611,7 +596,6 @@ class GeneralDataManager private constructor() {
     }
 
     companion object {
-
         private var mInstance: GeneralDataManager? = null
 
         // final Strings to choose proper listener to attach
@@ -626,7 +610,7 @@ class GeneralDataManager private constructor() {
                 if (mInstance == null)
                     mInstance = GeneralDataManager()
 
-                return mInstance
+                return mInstance as GeneralDataManager
             }
     }
 }

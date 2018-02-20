@@ -32,7 +32,7 @@ class MyCookBooksFragment : Fragment() {
             }
         }
 
-        GeneralDataManager.getInstance().setOnRecipesUpdateListener(listener)
+        GeneralDataManager.instance.setOnRecipesUpdateListener(listener)
 
         return super.onCreateView(inflater, container, savedInstanceState)
 

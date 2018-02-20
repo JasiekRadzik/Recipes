@@ -30,16 +30,16 @@ import com.github.barteksc.pdfviewer.ScrollBar
 class DocumentTestFragment : Fragment() {
 
     internal var mEditTextPref: EditTextPref? = null
-    internal var mRecipeManager: RecipeManager
-    internal var mDocCreator: DocumentCreator
+    private lateinit var mRecipeManager: RecipeManager
+    private lateinit var mDocCreator: DocumentCreator
 
-    internal var mMainRelativeView: RelativeLayout
-    internal var mPdfRelativeView: RelativeLayout
+    private lateinit var mMainRelativeView: RelativeLayout
+    private lateinit var mPdfRelativeView: RelativeLayout
 
-    internal var mStartSim: Button
+    private lateinit var mStartSim: Button
 
-    internal var mPdfView: PDFView
-    internal var mScrollBar: ScrollBar
+    private lateinit var mPdfView: PDFView
+    private lateinit var mScrollBar: ScrollBar
 
     private var mIsShowPreviewVisible = false
 
@@ -66,10 +66,10 @@ class DocumentTestFragment : Fragment() {
 
         mRecipeManager = RecipeManager.instance
         mRecipeManager.createNewRecipe()
-        mRecipeManager.currentOrCreateNewRecipe.title = "hehe"
-        mRecipeManager.currentOrCreateNewRecipe.documentStyle = ConstantsForRecipeDocumentStyles.RECIPE_LIGHT_BRONZE_INGREDIENTS_LEFT
+        mRecipeManager.currentOrNewRecipe.title = "hehe"
+        mRecipeManager.currentOrNewRecipe.documentStyle = ConstantsForRecipeDocumentStyles.RECIPE_LIGHT_BRONZE_INGREDIENTS_LEFT
 
-        mDocCreator = DocumentCreator.getInstance()
+        mDocCreator = DocumentCreator.instance
 
         val path = "/storage/emulated/0/Pictures/cheeseCake.jpeg"
         mRecipeManager.picturePath = path
@@ -84,14 +84,14 @@ class DocumentTestFragment : Fragment() {
                 mEditTextPref!!.text = "Line: $i with text: Hello line $i"
 
                 val x = mEditTextPref
-                mRecipeManager.currentOrCreateNewRecipe.list.add(x)
+                mRecipeManager.currentOrNewRecipe.list.add(x!!)
             }
 
-            for (i in 0 until mRecipeManager.currentOrCreateNewRecipe.list.size - 1) {
-                Log.e("List part: ", i.toString() + ": " + mRecipeManager.currentOrCreateNewRecipe.list[i].text)
+            for (i in 0 until mRecipeManager.currentOrNewRecipe.list.size - 1) {
+                Log.e("List part: ", i.toString() + ": " + mRecipeManager.currentOrNewRecipe.list[i].text)
             }
 
-            mDocCreator.prepareEnviromentAndwriteDocument(mRecipeManager.currentOrCreateNewRecipe, activity)
+            mDocCreator.prepareEnvironmentAndWriteDocument(mRecipeManager.currentOrNewRecipe, activity)
         }
 
         return view

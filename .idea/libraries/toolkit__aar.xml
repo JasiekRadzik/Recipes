@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="toolkit:@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/toolkit.aar/08c9507f1c2eb4e507ae80083b4a9402/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/toolkit.aar/08c9507f1c2eb4e507ae80083b4a9402/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/toolkit.aar/c4d613686e4b3fb909870bb3ed74744c/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/toolkit.aar/c4d613686e4b3fb909870bb3ed74744c/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

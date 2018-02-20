@@ -6,4 +6,5 @@
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="button_edit_recipe_part_padding">8dp</dimen>
+    <dimen name="recipe_summary_space_30">30dp</dimen>
 </resources>

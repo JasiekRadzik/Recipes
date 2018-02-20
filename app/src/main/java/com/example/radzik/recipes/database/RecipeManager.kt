@@ -26,14 +26,14 @@ class RecipeManager {
     var currentFragmentID = 0
         private set
 
-    val currentOrCreateNewRecipe: Recipe
+    val currentOrNewRecipe: Recipe
         get() {
             if (mRecipe == null) {
                 mRecipe = Recipe()
             }
 
             isRecipeHeldInManager = true
-            return mRecipe
+            return mRecipe as Recipe
         }
 
     fun resetManagerInstance() {
@@ -45,34 +45,30 @@ class RecipeManager {
     }
 
     fun getCourseTypeTranslation(activity: Activity): String {
-        return if (mRecipe!!.courseType == mRecipe!!.STARTER) {
+        return if (mRecipe!!.courseType == Recipe.STARTER) {
             activity.resources.getString(R.string.course_type_starter)
-        } else if (mRecipe!!.courseType == mRecipe!!.MAIN_COURSE) {
+        } else if (mRecipe!!.courseType == Recipe.MAIN_COURSE) {
             activity.resources.getString(R.string.course_type_main_course)
         } else if (mRecipe!!.courseType == Recipe.DESSERT) {
             activity.resources.getString(R.string.course_type_dessert)
-        } else if (mRecipe!!.courseType == mRecipe!!.SOUP) {
+        } else if (mRecipe!!.courseType == Recipe.SOUP) {
             activity.resources.getString(R.string.course_type_soup)
         } else {
             ""
         }
     }
 
-    fun getSelectedCourseTypeTranslation(number: Int?, activity: Activity): String {
-        return if (number == mRecipe!!.STARTER) {
-            activity.resources.getString(R.string.course_type_starter)
-        } else if (number == mRecipe!!.MAIN_COURSE) {
-            activity.resources.getString(R.string.course_type_main_course)
-        } else if (number == mRecipe!!.DESSERT) {
-            activity.resources.getString(R.string.course_type_dessert)
-        } else if (number == mRecipe!!.SOUP) {
-            activity.resources.getString(R.string.course_type_soup)
-        } else {
-            ""
+    private fun getSelectedCourseTypeTranslation(number: Int?, activity: Activity): String {
+        return when (number) {
+            Recipe.STARTER -> activity.resources.getString(R.string.course_type_starter)
+            Recipe.MAIN_COURSE -> activity.resources.getString(R.string.course_type_main_course)
+            Recipe.DESSERT -> activity.resources.getString(R.string.course_type_dessert)
+            Recipe.SOUP -> activity.resources.getString(R.string.course_type_soup)
+            else -> ""
         }
     }
 
-    fun getAllCourseTypesArray(activity: Activity): ArrayList<String> {
+    fun getAllCourseTypesArray(activity: Activity): ArrayList<String>? {
         mCourseTypesArray = ArrayList()
         mCourseTypesArray!!.add(getSelectedCourseTypeTranslation(Recipe.STARTER, activity))
         mCourseTypesArray!!.add(getSelectedCourseTypeTranslation(Recipe.MAIN_COURSE, activity))
@@ -106,7 +102,7 @@ class RecipeManager {
                     mInstance = RecipeManager()
                 }
 
-                return mInstance
+                return mInstance as RecipeManager
             }
     }
 }

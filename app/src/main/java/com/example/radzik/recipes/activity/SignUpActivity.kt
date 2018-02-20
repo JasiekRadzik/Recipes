@@ -14,15 +14,12 @@ import android.widget.Toast
 import com.example.radzik.recipes.R
 import com.example.radzik.recipes.database.User
 import com.firebase.client.Firebase
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.FirebaseDatabase
 
 
-class SignUpActivity : AppCompatActivity() {
+open class SignUpActivity : AppCompatActivity() {
 
     //Add YOUR Firebase Reference URL instead of the following URL
     private val mRef = Firebase("https://recipes-309da.firebaseio.com/")
@@ -61,7 +58,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     //This method sets up a new User by fetching the mUser entered details.
-    protected fun setUpUser() {
+    private fun setUpUser() {
         mUser = User()
         mUser!!.name = mName!!.text.toString()
         mUser!!.phoneNumber = mPhoneNumber!!.text.toString()
@@ -107,7 +104,7 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun onAuthenticationSucess(mUser: FirebaseUser) {
         // Write new mUser
-        saveNewUser(mUser.uid, this.mUser!!.name, this.mUser!!.phoneNumber, this.mUser!!.email, this.mUser!!.password)
+        saveNewUser(mUser.uid, this.mUser!!.name!!, this.mUser!!.phoneNumber!!, this.mUser!!.email!!, this.mUser!!.password!!)
         signOut()
 
         // Go to LoginActivity

@@ -67,6 +67,12 @@
     <string name="cookbook_large">COOKBOOK</string>
     <string name="hint_ingredient_description">Ingredient description</string>
     <string name="hint_ingredient_amount">Ingredient amount</string>
+    <string name="recipe_title_txt_view">Recipe Title</string>
+    <string name="cookbook_title_txt_view">Cookbook Title</string>
+    <string name="recipe_subheading_text_view">Recipe Subheading</string>
+    <string name="recipe_course_type_text_viewe">Recipe Course Type</string>
+    <string name="photo_selected_text_view">Photo Selected</string>
+    <string name="recipe_written_text_view">Recipe written</string>
 
 
 </resources>

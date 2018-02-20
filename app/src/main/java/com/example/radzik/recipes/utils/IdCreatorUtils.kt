@@ -33,7 +33,7 @@ class IdCreatorUtils private constructor() {
 
         for (i in 0 until LENGTH) {
             val x = random.nextInt(values.size)
-            out = out + values[x]
+            out += values[x]
         }
 
         return out
@@ -49,7 +49,7 @@ class IdCreatorUtils private constructor() {
                 if (mInstance == null)
                     mInstance = IdCreatorUtils()
 
-                return mInstance
+                return mInstance!!
             }
     }
 }

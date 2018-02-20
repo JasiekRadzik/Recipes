@@ -24,20 +24,15 @@ import com.facebook.FacebookSdk
 import com.facebook.login.LoginResult
 import com.facebook.login.widget.LoginButton
 import com.firebase.client.Firebase
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 
 /**
  * Created by AndroidBash on 10/07/16
  */
 
 class LoginActivity : AppCompatActivity() {
-    var mUser: User
+    lateinit var mUser: User
     private var mEmail: EditText? = null
     private var mPassword: EditText? = null
     private var mAuth: FirebaseAuth? = null
@@ -45,11 +40,10 @@ class LoginActivity : AppCompatActivity() {
     private var mProgressDialog: ProgressDialog? = null
 
     //Add YOUR Firebase Reference URL instead of the following URL
-    internal var mRef: Firebase
+    private lateinit var mRef: Firebase
 
     //FaceBook callbackManager
     private var callbackManager: CallbackManager? = null
-    //
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +54,6 @@ class LoginActivity : AppCompatActivity() {
 
         val scrollView = findViewById(R.id.scrollToHoldBackground) as ScrollView
         scrollView.isEnabled = false
-
 
         mAuth = FirebaseAuth.getInstance()
 
@@ -73,11 +66,11 @@ class LoginActivity : AppCompatActivity() {
             try {
                 image = mAuth!!.currentUser!!.photoUrl!!.toString()
             } catch (e: NullPointerException) {
-                Log.e("Null Pointer Exception", "" + e.toString())
+                Log.e("Null Pointer Exception", "" + e.message)
             }
 
             intent.putExtra("user_id", uid)
-            if (image != null || image !== "") {
+            if (image != null || image != "") {
                 intent.putExtra("profile_picture", image)
             }
             startActivity(intent)
@@ -138,6 +131,7 @@ class LoginActivity : AppCompatActivity() {
         if (mAuthListener != null) {
             mAuth!!.removeAuthStateListener(mAuthListener!!)
         }
+
     }
 
 
@@ -193,7 +187,6 @@ class LoginActivity : AppCompatActivity() {
 
                     hideProgressDialog()
                 }
-        //
     }
 
     private fun validateForm(): Boolean {
@@ -282,7 +275,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     companion object {
-
         private val TAG = "AndroidBash"
     }
 }

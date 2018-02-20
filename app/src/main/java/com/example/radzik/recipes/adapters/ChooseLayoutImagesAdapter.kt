@@ -5,6 +5,7 @@ package com.example.radzik.recipes.adapters
  */
 
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -32,7 +33,8 @@ class ChooseLayoutImagesAdapter(private val mContext: Context) : BaseAdapter() {
 
 
     // Override this method according to your need
-    override fun getView(index: Int, view: View, viewGroup: ViewGroup): View {
+    override fun getView(index: Int, view: View?, viewGroup: ViewGroup): View? {
+
         // TODO Auto-generated method stub
         val i = ImageView(mContext)
 

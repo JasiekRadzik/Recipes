@@ -2,13 +2,6 @@ package com.example.radzik.recipes.fragment
 
 
 import android.app.Fragment
-import android.app.FragmentTransaction
-import android.content.ActivityNotFoundException
-import android.content.ClipData
-import android.content.ClipboardManager
-
-import android.content.DialogInterface
-import android.content.Intent
 
 import android.os.Bundle
 
@@ -16,27 +9,17 @@ import android.os.Handler
 import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.RelativeLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 
@@ -49,18 +32,21 @@ import com.example.radzik.recipes.database.EditTextPref
 import com.example.radzik.recipes.database.EditTextPrefManager
 import com.example.radzik.recipes.database.RecipeManager
 import com.example.radzik.recipes.utils.IdCreatorUtils
-import com.example.radzik.recipes.utils.PixelsToDensityConverter
 import com.jmedeisis.draglinearlayout.DragLinearLayout
 
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.Locale
 
-import butterknife.BindView
-import butterknife.ButterKnife
-
 import android.app.Activity.RESULT_OK
+import android.content.*
 import android.content.Context.CLIPBOARD_SERVICE
+import android.inputmethodservice.Keyboard
+import android.util.TypedValue
+import android.view.*
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_write.*
+import kotlinx.android.synthetic.main.layout_create_recipe_part.*
 
 /**
  * Created by Radzik on 31.07.2017.
@@ -68,26 +54,9 @@ import android.content.Context.CLIPBOARD_SERVICE
 
 class WriteRecipeFragment : Fragment() {
 
-    @BindView(R.id.main_scroll_view)
-    internal var mMainScrollView: ScrollView? = null
-
-    var layoutContainingRecipeParts: DragLinearLayout
-        internal set
-
-    @BindView(R.id.button_add)
-    internal var mAddButton: Button? = null
-
-    @BindView(R.id.hidden_layout_edit_part)
-    internal var mHiddenLayoutEditPart: RelativeLayout? = null
-
-    @BindView(R.id.mainEditText)
-    internal var mMainEditText: EditText? = null
-
-    @BindView(R.id.layoutWithTextTypesButtons)
-    internal var mLayoutWithTextTypesButtons: LinearLayout? = null
-
-    @BindView(R.id.ingredientAmountEditText)
-    internal var mIngredientAmountEditText: EditText? = null
+    companion object {
+        private val REQ_CODE_SPEECH_INPUT = 100
+    }
 
     private var mLayoutClickedToEdit: RelativeLayout? = null
 
@@ -103,46 +72,106 @@ class WriteRecipeFragment : Fragment() {
 
     private var mDefaultMainEditTextParams: LinearLayout.LayoutParams? = null
 
+    private var mIsBackFromSummary = false
+
+    init {
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
+
+        // checks whether a user was coming back from RecipeSummaryFragment to fill empty info
+        try {
+            val arguments = arguments
+            mIsBackFromSummary = arguments.getBoolean("mIsBackFromSummary")
+        } catch (e: NullPointerException) {
+            e.printStackTrace()
+        }
+
+        return inflater?.inflate(R.layout.fragment_write, container, false)
+    }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        mBottomUpAnim = AnimationUtils.loadAnimation(context, R.anim.bottom_up_recipe_edit_view)
+        mBottomDownAnim = AnimationUtils.loadAnimation(context, R.anim.bottom_down_recipe_edit_view)
+
+        dragLinearLayoutContainer.setContainerScrollView(mainScrollView)
+        dragLinearLayoutContainer.isLongClickable = true
+        dragLinearLayoutContainer.setOnViewSwapListener(dragListener)
+
+        buttonAdd!!.setOnClickListener(onADDClickListener)
+
+        mManager = RecipeManager.instance
+        mETPManager = EditTextPrefManager.instance
+
+        // set currently opened fragment as CHOOSE DOC LAYOUT FRAGMENT
+        mManager!!.setCurrentFragment(ConstantsForFragmentsSelection.WRITE_RECIPE_FRAGMENT)
+
+        mIsTextViewOpenedToEdit = false
+
+        mTextToSpeech = TextToSpeech(MainActivity.contextOfApplication, TextToSpeech.OnInitListener { mTextToSpeech!!.language = Locale.UK })
+
+        // binds listeners to buttons
+        bindButtonsListenerAndSetSelectedFalse()
+
+        if (mManager!!.currentOrNewRecipe != null && mManager!!.currentOrNewRecipe.list.size != 0) {
+            val list = mManager!!.currentOrNewRecipe.list
+            for (i in list.indices.reversed()) {
+                recreateTextViewsFromRecipe(i)
+            }
+        } else if (mManager!!.currentOrNewRecipe != null && mManager!!.currentOrNewRecipe.list.size == 0) {
+            mManager!!.currentOrNewRecipe.mapForEditTextPrefs = HashMap()
+        }
+
+        // sets default layout for create recipe part
+        mDefaultMainEditTextParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        mDefaultMainEditTextParams!!.setMargins(0, 0, 0, 0)
+        setDefaultCreateRecipePartLayout()
+    }
+
     internal var onADDClickListener: View.OnClickListener = View.OnClickListener {
-        if (mMainScrollView!!.visibility == View.VISIBLE) {
+        if (mainScrollView!!.visibility == View.VISIBLE) {
 
             setDefaultCreateRecipePartLayout()
 
-            mAddButton!!.isEnabled = false
-            mAddButton!!.text = resources.getString(R.string.button_bottom_save_edited_recipe_part)
+            buttonAdd!!.isEnabled = false
+            buttonAdd!!.text = resources.getString(R.string.button_bottom_save_edited_recipe_part)
 
             // hides layout containing textViews and shows layout for create recipe
-            mHiddenLayoutEditPart!!.startAnimation(mBottomUpAnim)
-            mHiddenLayoutEditPart!!.visibility = View.VISIBLE
-            mMainScrollView!!.visibility = View.GONE
+            hiddenLayoutEditPart!!.visibility = View.VISIBLE
+            hiddenLayoutEditPart!!.startAnimation(mBottomUpAnim)
+            mainEditText!!.requestFocus()
+            KeyboardUtils.show(mainEditText)
 
-            // clears mMainEditText so that we can create another part of a recipe
-            mMainEditText!!.setText("")
-            mIngredientAmountEditText!!.setText("")
-            mMainEditText!!.addTextChangedListener(txtWatcher)
+            mainScrollView!!.visibility = View.GONE
+
+            // clears mainEditText so that we can create another part of a recipe
+            mainEditText!!.setText("")
+            ingredientAmountEditText!!.setText("")
+            mainEditText!!.addTextChangedListener(txtWatcher)
 
             // creates object to store information about typeface, size etc.
             mEditTextPref = EditTextPref()
 
-            for (i in 0 until mLayoutWithTextTypesButtons!!.childCount - 1) {
-                val button = mLayoutWithTextTypesButtons!!.getChildAt(i) as Button
+            for (i in 0 until layoutWithTextTypesButtons!!.childCount - 1) {
+                val button = layoutWithTextTypesButtons!!.getChildAt(i) as Button
                 button.isSelected = false
             }
 
-            mMainEditText!!.requestFocus()
-            KeyboardUtils.show(mMainEditText)
-
             // configures button which closes this window
-            val buttonClear = mHiddenLayoutEditPart!!.findViewById(R.id.button_clear) as ImageButton
+            val buttonClear = hiddenLayoutEditPart!!.findViewById(R.id.button_clear) as ImageButton
             buttonClear.setOnClickListener(buttonClearListener)
 
-        } else if (mMainScrollView!!.visibility == View.GONE && mIsTextViewOpenedToEdit) {
+        } else if (mainScrollView!!.visibility == View.GONE && mIsTextViewOpenedToEdit) {
 
-            KeyboardUtils.hide(mMainEditText)
+            KeyboardUtils.hide(mainEditText)
 
             // saves text into EditTextPref object
-            mEditTextPref!!.text = mMainEditText!!.text.toString()
-            mEditTextPref!!.ingredientAmount = mIngredientAmountEditText!!.text.toString()
+            mEditTextPref!!.text = mainEditText!!.text.toString()
+            mEditTextPref!!.ingredientAmount = ingredientAmountEditText!!.text.toString()
 
             if (mEditTextPref!!.recipePartType == ConstantsForRecipePartTypes.INGREDIENT) {
                 val txtViewIngredientAmount = mLayoutClickedToEdit!!.findViewById(R.id.textViewIngredientAmount) as TextView
@@ -161,31 +190,30 @@ class WriteRecipeFragment : Fragment() {
 
 
             // hides layout for create recipe and shows layout containing textViews
-            mHiddenLayoutEditPart!!.startAnimation(mBottomDownAnim)
-            mHiddenLayoutEditPart!!.postOnAnimation { mHiddenLayoutEditPart!!.visibility = View.GONE }
-            mMainScrollView!!.visibility = View.VISIBLE
+            hiddenLayoutEditPart!!.startAnimation(mBottomDownAnim)
+            hiddenLayoutEditPart!!.postOnAnimation { hiddenLayoutEditPart!!.visibility = View.GONE }
+            mainScrollView!!.visibility = View.VISIBLE
 
-            mAddButton!!.text = resources.getString(R.string.button_bottom_add_recipe_part)
+            buttonAdd!!.text = resources.getString(R.string.button_bottom_add_recipe_part)
 
             mIsTextViewOpenedToEdit = false
 
         } else {
 
-            KeyboardUtils.hide(mMainEditText)
+            KeyboardUtils.hide(mainEditText)
 
             if (mEditTextPref!!.recipePartType == ConstantsForRecipePartTypes.INGREDIENT) {
-                if (mIngredientAmountEditText!!.text != null) {
-                    mEditTextPref!!.ingredientAmount = mIngredientAmountEditText!!.text.toString()
+                if (ingredientAmountEditText!!.text != null) {
+                    mEditTextPref!!.ingredientAmount = ingredientAmountEditText!!.text.toString()
                 }
 
             }
             // saves text into EditTextPref object
-            mEditTextPref!!.text = mMainEditText!!.text.toString()
+            mEditTextPref!!.text = mainEditText!!.text.toString()
 
             // adds EditTextPref object to the list inside Recipe object, which contains all parts of the recipe
-            val x: EditTextPref?
-            x = mEditTextPref
-            mManager!!.currentOrCreateNewRecipe.list.add(x)
+            val x: EditTextPref? = mEditTextPref
+            mManager!!.currentOrNewRecipe.list.add(x!!)
 
             // resets mEditTextPref so it is empty for another part of the recipe
             mEditTextPref = null
@@ -194,13 +222,13 @@ class WriteRecipeFragment : Fragment() {
             createTextViewWithEditTextPref()
 
             // hides layout for create recipe and shows layout containing textViews
-            mHiddenLayoutEditPart!!.startAnimation(mBottomDownAnim)
-            mHiddenLayoutEditPart!!.postOnAnimation { mHiddenLayoutEditPart!!.visibility = View.GONE }
-            mMainScrollView!!.visibility = View.VISIBLE
+            hiddenLayoutEditPart!!.startAnimation(mBottomDownAnim)
+            hiddenLayoutEditPart!!.postOnAnimation { hiddenLayoutEditPart!!.visibility = View.GONE }
+            mainScrollView!!.visibility = View.VISIBLE
 
             setDefaultCreateRecipePartLayout()
 
-            mAddButton!!.text = resources.getString(R.string.button_bottom_add_recipe_part)
+            buttonAdd!!.text = resources.getString(R.string.button_bottom_add_recipe_part)
 
         }
     }
@@ -221,7 +249,7 @@ class WriteRecipeFragment : Fragment() {
                 mEditTextPref!!.recipePartType = ConstantsForRecipePartTypes.INGREDIENT
                 mETPManager!!.translateTypeToRecipePartName(mEditTextPref!!, activity)
                 (v as Button).isSelected = true
-                mIngredientAmountEditText!!.visibility = View.VISIBLE
+                ingredientAmountEditText!!.visibility = View.VISIBLE
             }
 
             R.id.button_short_description -> {
@@ -241,15 +269,15 @@ class WriteRecipeFragment : Fragment() {
             }
 
             R.id.buttonEditPartRefresh -> {
-                if (mIngredientAmountEditText!!.visibility == View.VISIBLE) {
-                    mIngredientAmountEditText!!.setText("")
+                if (ingredientAmountEditText!!.visibility == View.VISIBLE) {
+                    ingredientAmountEditText!!.setText("")
                 }
-                mMainEditText!!.setText("")
+                mainEditText!!.setText("")
             }
 
             R.id.buttonEditPartCopyTextToClipboard -> {
                 val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("Edit Part text", mMainEditText!!.text.toString())
+                val clip = ClipData.newPlainText("Edit Part text", mainEditText!!.text.toString())
                 Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
                 clipboard.primaryClip = clip
             }
@@ -259,10 +287,10 @@ class WriteRecipeFragment : Fragment() {
 
                 var speak = ""
                 try {
-                    if (mIngredientAmountEditText!!.visibility == View.VISIBLE) {
-                        speak = mIngredientAmountEditText!!.text.toString() + "of " + mMainEditText!!.text.toString()
+                    if (ingredientAmountEditText!!.visibility == View.VISIBLE) {
+                        speak = ingredientAmountEditText!!.text.toString() + "of " + mainEditText!!.text.toString()
                     } else {
-                        speak = mMainEditText!!.text.toString()
+                        speak = mainEditText!!.text.toString()
                     }
 
                 } catch (e: NullPointerException) {
@@ -295,11 +323,11 @@ class WriteRecipeFragment : Fragment() {
                     val id = hiddenID.text.toString()
 
                     // 2 step: we remove this EditTextPref from ArrayList and then we remove it from hashMap
-                    mManager!!.currentOrCreateNewRecipe.list.remove(mManager!!.currentOrCreateNewRecipe.mapForEditTextPrefs[id])
-                    mManager!!.currentOrCreateNewRecipe.mapForEditTextPrefs.remove(id)
+                    mManager!!.currentOrNewRecipe.list.remove(mManager!!.currentOrNewRecipe.mapForEditTextPrefs[id])
+                    mManager!!.currentOrNewRecipe.mapForEditTextPrefs.remove(id)
 
                     // 3 step: we remove this view from the layout which contains all views
-                    (layoutContainingRecipeParts as ViewManager).removeView(relative)
+                    (dragLinearLayoutContainer as ViewManager).removeView(relative)
                 }
                 R.id.no_i_am_not -> {
                 }
@@ -311,27 +339,24 @@ class WriteRecipeFragment : Fragment() {
     }
 
     internal var buttonClearListener: View.OnClickListener = View.OnClickListener {
-        mIngredientAmountEditText!!.visibility = View.GONE
+        ingredientAmountEditText!!.visibility = View.GONE
         // hides layout for create recipe and shows layout containing textViews
-        mHiddenLayoutEditPart!!.startAnimation(mBottomDownAnim)
-        mHiddenLayoutEditPart!!.postOnAnimation { mHiddenLayoutEditPart!!.visibility = View.GONE }
-        mMainScrollView!!.visibility = View.VISIBLE
+        hiddenLayoutEditPart!!.startAnimation(mBottomDownAnim)
+        hiddenLayoutEditPart!!.postOnAnimation { hiddenLayoutEditPart!!.visibility = View.GONE }
+        mainScrollView!!.visibility = View.VISIBLE
 
-        mAddButton!!.text = resources.getString(R.string.button_bottom_add_recipe_part)
-        KeyboardUtils.hide(mMainEditText)
-        mMainEditText!!.clearFocus()
-        mAddButton!!.isEnabled = true
+        buttonAdd!!.text = resources.getString(R.string.button_bottom_add_recipe_part)
+        KeyboardUtils.hide(mainEditText)
+        mainEditText!!.clearFocus()
+        buttonAdd!!.isEnabled = true
     }
 
-    // txtWatcher handles disabling and enabling mAddButton depending on the length of editText
+    // txtWatcher handles disabling and enabling buttonAdd depending on the length of editText
     internal var txtWatcher: TextWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            if (count != 0) {
-                mAddButton!!.isEnabled = true
-            } else
-                mAddButton!!.isEnabled = false
+            buttonAdd!!.isEnabled = count != 0
         }
 
         override fun afterTextChanged(s: Editable) {}
@@ -342,40 +367,40 @@ class WriteRecipeFragment : Fragment() {
         mIsTextViewOpenedToEdit = true
         mLayoutClickedToEdit = v as RelativeLayout
 
-        mAddButton!!.isEnabled = true
-        mAddButton!!.text = resources.getString(R.string.button_bottom_save_edited_recipe_part)
+        buttonAdd!!.isEnabled = true
+        buttonAdd!!.text = resources.getString(R.string.button_bottom_save_edited_recipe_part)
 
         // hides layout containing textViews and shows layout for create recipe
-        mHiddenLayoutEditPart!!.startAnimation(mBottomUpAnim)
-        mHiddenLayoutEditPart!!.visibility = View.VISIBLE
-        mMainScrollView!!.visibility = View.GONE
+        hiddenLayoutEditPart!!.startAnimation(mBottomUpAnim)
+        hiddenLayoutEditPart!!.visibility = View.VISIBLE
+        mainScrollView!!.visibility = View.GONE
 
         // binds listeners to buttons
         bindButtonsListenerAndSetSelectedFalse()
 
         // retrieves EditTextPref object by ID from HashMap contained in Recipe object
         val id = (v.findViewById(R.id.textViewWithIDHidden) as TextView).text.toString()
-        mEditTextPref = mManager!!.currentOrCreateNewRecipe.mapForEditTextPrefs[id]
-        mMainEditText!!.setText(mEditTextPref!!.text)
+        mEditTextPref = mManager!!.currentOrNewRecipe.mapForEditTextPrefs[id]
+        mainEditText!!.setText(mEditTextPref!!.text)
 
         if (mEditTextPref!!.recipePartType == ConstantsForRecipePartTypes.INGREDIENT) {
-            mIngredientAmountEditText!!.visibility = View.VISIBLE
-            mIngredientAmountEditText!!.setText(mEditTextPref!!.ingredientAmount)
+            ingredientAmountEditText!!.visibility = View.VISIBLE
+            ingredientAmountEditText!!.setText(mEditTextPref!!.ingredientAmount)
         }
         singleButtonChecker()
 
-        mMainEditText!!.requestFocus()
-        KeyboardUtils.show(mMainEditText)
+        mainEditText!!.requestFocus()
+        KeyboardUtils.show(mainEditText)
 
         // configures button which closes this window
-        val buttonClear = mHiddenLayoutEditPart!!.findViewById(R.id.button_clear) as ImageButton
+        val buttonClear = hiddenLayoutEditPart!!.findViewById(R.id.button_clear) as ImageButton
         buttonClear.setOnClickListener(buttonClearListener)
     }
 
     // ----- ----- ----- ----- ----- HANDLES SWAP EVENTS INSIDE DRAG LINEAR LAYOUT ----- ----- ----- ----- ----- //
     internal var dragListener: DragLinearLayout.OnViewSwapListener = DragLinearLayout.OnViewSwapListener { firstView, firstPosition, secondView, secondPosition ->
-        if (layoutContainingRecipeParts.childCount > 1 && firstPosition != secondPosition) {
-            val oldList = mManager!!.currentOrCreateNewRecipe.list
+        if (dragLinearLayoutContainer.childCount > 1 && firstPosition != secondPosition) {
+            val oldList = mManager!!.currentOrNewRecipe.list
             val newList = ArrayList<EditTextPref>()
 
             Log.e("Old List", ": " + oldList)
@@ -394,71 +419,23 @@ class WriteRecipeFragment : Fragment() {
                 newList.add(oldList[i])
             }
 
-            mManager!!.currentOrCreateNewRecipe.list = newList
+            mManager!!.currentOrNewRecipe.list = newList
 
             Log.e("Number", "first position: $firstPosition, second position:$secondPosition")
             Log.e("New list", ": " + newList)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle): View? {
-        val view = inflater.inflate(R.layout.fragment_write, container, false)
-        ButterKnife.bind(this, view)
-
-        setHasOptionsMenu(true)
-
-        mBottomUpAnim = AnimationUtils.loadAnimation(context, R.anim.bottom_up_recipe_edit_view)
-        mBottomDownAnim = AnimationUtils.loadAnimation(context, R.anim.bottom_down_recipe_edit_view)
-
-        layoutContainingRecipeParts = view.findViewById(R.id.drag_linear_layout_container) as DragLinearLayout
-
-        layoutContainingRecipeParts.setContainerScrollView(mMainScrollView)
-        layoutContainingRecipeParts.isLongClickable = true
-        layoutContainingRecipeParts.setOnViewSwapListener(dragListener)
-
-        mAddButton!!.setOnClickListener(onADDClickListener)
-
-        mManager = RecipeManager.instance
-        mETPManager = EditTextPrefManager.instance
-
-        // set currently opened fragment as CHOOSE DOC LAYOUT FRAGMENT
-        mManager!!.setCurrentFragment(ConstantsForFragmentsSelection.WRITE_RECIPE_FRAGMENT)
-
-        mIsTextViewOpenedToEdit = false
-
-        mTextToSpeech = TextToSpeech(MainActivity.getContextOfApplication(), TextToSpeech.OnInitListener { mTextToSpeech!!.language = Locale.UK })
-
-        // binds listeners to buttons
-        bindButtonsListenerAndSetSelectedFalse()
-
-        if (mManager!!.currentOrCreateNewRecipe != null && mManager!!.currentOrCreateNewRecipe.list.size != 0) {
-            val list = mManager!!.currentOrCreateNewRecipe.list
-            for (i in list.indices.reversed()) {
-                recreateTextViewsFromRecipe(i)
-            }
-        } else if (mManager!!.currentOrCreateNewRecipe != null && mManager!!.currentOrCreateNewRecipe.list.size == 0) {
-            mManager!!.currentOrCreateNewRecipe.mapForEditTextPrefs = HashMap()
-        }
-
-
-        // sets default layout for create recipe part
-        mDefaultMainEditTextParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        mDefaultMainEditTextParams!!.setMargins(0, 0, 0, 0)
-        setDefaultCreateRecipePartLayout()
-
-        return view
-    }
-
     private fun bindButtonsListenerAndSetSelectedFalse() {
 
-        for (i in 0 until mLayoutWithTextTypesButtons!!.childCount - 1) {
-            val button = mLayoutWithTextTypesButtons!!.getChildAt(i) as Button
+        for (i in 0 until layoutWithTextTypesButtons!!.childCount - 1) {
+            val button = layoutWithTextTypesButtons!!.getChildAt(i) as Button
             button.isClickable = true
             button.isSelected = false
             button.setOnClickListener(recipeButtonsListener)
         }
 
-        val linearLayout2 = mHiddenLayoutEditPart!!.findViewById(R.id.layoutWithOtherOptionsButtons) as LinearLayout
+        val linearLayout2 = hiddenLayoutEditPart!!.findViewById(R.id.layoutWithOtherOptionsButtons) as LinearLayout
         for (i in 0 until linearLayout2.childCount - 1) {
             linearLayout2.getChildAt(i).setOnClickListener(recipeButtonsListener)
         }
@@ -466,10 +443,10 @@ class WriteRecipeFragment : Fragment() {
 
     private fun singleButtonChecker() {
         when (mEditTextPref!!.recipePartType) {
-            ConstantsForRecipePartTypes -> (mLayoutWithTextTypesButtons!!.getChildAt(0) as Button).isSelected = true
-            ConstantsForRecipePartTypes.INGREDIENT -> (mLayoutWithTextTypesButtons!!.getChildAt(1) as Button).isSelected = true
-            ConstantsForRecipePartTypes.SHORT_DESCRIPTION -> (mLayoutWithTextTypesButtons!!.getChildAt(2) as Button).isSelected = true
-            ConstantsForRecipePartTypes.ADDITION_TO_EAT_WITH -> (mLayoutWithTextTypesButtons!!.getChildAt(3) as Button).isSelected = true
+            ConstantsForRecipePartTypes.HOW_TO_COOK -> (layoutWithTextTypesButtons!!.getChildAt(0) as Button).isSelected = true
+            ConstantsForRecipePartTypes.INGREDIENT -> (layoutWithTextTypesButtons!!.getChildAt(1) as Button).isSelected = true
+            ConstantsForRecipePartTypes.SHORT_DESCRIPTION -> (layoutWithTextTypesButtons!!.getChildAt(2) as Button).isSelected = true
+            ConstantsForRecipePartTypes.ADDITION_TO_EAT_WITH -> (layoutWithTextTypesButtons!!.getChildAt(3) as Button).isSelected = true
         }
     }
 
@@ -481,24 +458,23 @@ class WriteRecipeFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.save_icon -> {
-                if (mManager!!.currentOrCreateNewRecipe.list.size != 0) {
-                    openNextFragment(ChoosePhotoFragment())
+                if (mIsBackFromSummary) {
+                    openNextFragment(RecipeSummaryFragment())
                 } else {
-                    Toast.makeText(context, "Recipe can't be empty!", Toast.LENGTH_SHORT).show()
+                    openNextFragment(ChoosePhotoFragment())
                 }
 
                 return true
             }
+
             R.id.clear_icon -> {
 
                 val alertDialog = AlertDialog.Builder(activity).create()
                 alertDialog.setTitle("")
                 alertDialog.setMessage(resources.getString(R.string.delete_current_recipe_question))
                 alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes") { dialog, which ->
-                    if (WriteRecipeFragment::class.java != null) {
-                        layoutContainingRecipeParts.removeAllViewsInLayout()
-                        RecipeManager.instance.createNewRecipe()
-                    }
+                    dragLinearLayoutContainer.removeAllViewsInLayout()
+                    RecipeManager.instance.createNewRecipe()
                     alertDialog.dismiss()
                 }
                 alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No") { dialog, which -> alertDialog.dismiss() }
@@ -531,7 +507,7 @@ class WriteRecipeFragment : Fragment() {
             REQ_CODE_SPEECH_INPUT -> {
                 if (resultCode == RESULT_OK && null != data) {
                     val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                    mMainEditText!!.setText(result[0])
+                    mainEditText!!.setText(result[0])
                 }
             }
         }
@@ -546,8 +522,8 @@ class WriteRecipeFragment : Fragment() {
     }
 
     private fun unselectEditRecipeTextStyleButtons() {
-        for (i in 0 until mLayoutWithTextTypesButtons!!.childCount - 1) {
-            val button = mLayoutWithTextTypesButtons!!.getChildAt(i) as Button
+        for (i in 0 until layoutWithTextTypesButtons!!.childCount - 1) {
+            val button = layoutWithTextTypesButtons!!.getChildAt(i) as Button
             button.isSelected = false
         }
     }
@@ -570,7 +546,7 @@ class WriteRecipeFragment : Fragment() {
         textLayout.layoutParams = params1
 
         // sets annotation in the top right of single view, describing if it's a normal text, headline etc.
-        val list = mManager!!.currentOrCreateNewRecipe.list
+        val list = mManager!!.currentOrNewRecipe.list
         textViewType.text = list[position].recipePartName
 
         // sets content of a textView
@@ -583,14 +559,14 @@ class WriteRecipeFragment : Fragment() {
 
         // sets hiddenID to textLayout
         val hiddenID = textLayout.findViewById(R.id.textViewWithIDHidden) as TextView
-        hiddenID.setText(list[position].getID())
+        hiddenID.setText(list[position].id)
 
         // manages focus on the last textView
         textViewContent.isFocusable = true
         textViewContent.requestFocus()
 
         // adds single view to a DragLinearLayout
-        layoutContainingRecipeParts.addDragView(topSingleView, textLayout, layoutContainingRecipeParts.childCount)
+        dragLinearLayoutContainer.addDragView(topSingleView, textLayout, dragLinearLayoutContainer.childCount)
 
         // attaches a listener to textLayout
         topSingleView.setOnClickListener(txtViewOpener)
@@ -622,7 +598,7 @@ class WriteRecipeFragment : Fragment() {
         textLayout.layoutParams = params1
 
         // sets annotation in the top right of single view, describing if it's a normal text, headline etc.
-        val list = mManager!!.currentOrCreateNewRecipe.list
+        val list = mManager!!.currentOrNewRecipe.list
         val editTextPref = list[list.size - 1]
         textViewType.text = editTextPref.recipePartName
 
@@ -634,19 +610,19 @@ class WriteRecipeFragment : Fragment() {
         }
 
         // creates a unique ID for EditTextPref and puts it into HashMap
-        list[list.size - 1].setID(IdCreatorUtils.getInstance().id)
-        mManager!!.currentOrCreateNewRecipe.mapForEditTextPrefs.put(list[list.size - 1].getID(), list[list.size - 1])
+        list[list.size - 1].id = (IdCreatorUtils.instance.id)
+        mManager!!.currentOrNewRecipe.mapForEditTextPrefs.put(list[list.size - 1].id!!, list[list.size - 1])
 
         // sets hiddenID to textLayout
         val hiddenID = textLayout.findViewById(R.id.textViewWithIDHidden) as TextView
-        hiddenID.setText(list[list.size - 1].getID())
+        hiddenID.text = list[list.size - 1].id
 
         // manages focus on the last textView
         textViewContent.isFocusable = true
         textViewContent.requestFocus()
 
         // adds single view to a DragLinearLayout
-        layoutContainingRecipeParts.addDragView(topSingleView, textLayout, layoutContainingRecipeParts.childCount)
+        dragLinearLayoutContainer.addDragView(topSingleView, textLayout, dragLinearLayoutContainer.childCount)
 
         // attaches a listener to textLayout
         topSingleView.setOnClickListener(txtViewOpener)
@@ -656,9 +632,12 @@ class WriteRecipeFragment : Fragment() {
 
         val handler = Handler()
         handler.postDelayed({
-            removeTextViewButton?.setOnClickListener(removeTextViewButtonListener)
+            removeTextViewButton.setOnClickListener(removeTextViewButtonListener)
         }, 1000)
+
+
     }
+
 
     private fun openNextFragment(fragment: Fragment) {
         val transaction = fragmentManager.beginTransaction()
@@ -668,13 +647,8 @@ class WriteRecipeFragment : Fragment() {
     }
 
     private fun setDefaultCreateRecipePartLayout() {
-        mIngredientAmountEditText!!.visibility = View.GONE
-        mMainEditText!!.hint = ""
-        mIngredientAmountEditText!!.setText("")
-    }
-
-    companion object {
-
-        private val REQ_CODE_SPEECH_INPUT = 100
+        ingredientAmountEditText!!.visibility = View.GONE
+        mainEditText!!.hint = ""
+        ingredientAmountEditText!!.setText("")
     }
 }

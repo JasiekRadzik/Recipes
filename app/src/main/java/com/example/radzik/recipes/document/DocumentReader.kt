@@ -11,10 +11,10 @@ object DocumentReader {
     val instance: DocumentReader
         @Synchronized get() {
             if (mInstance == null) {
-                mInstance = DocumentReader()
+                mInstance = DocumentReader
             }
 
-            return mInstance
+            return this!!.mInstance!!
         }
 
 

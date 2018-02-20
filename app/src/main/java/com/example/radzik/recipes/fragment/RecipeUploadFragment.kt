@@ -24,9 +24,9 @@ class RecipeUploadFragment : Fragment() {
 
     private var mHandler: Handler? = null
 
-    internal var mRecipeProgressBar: ProgressBar
-    internal var mImageView: ImageView
-    internal var mTextView: TextView
+    private lateinit var mRecipeProgressBar: ProgressBar
+    private lateinit var mImageView: ImageView
+    private lateinit var mTextView: TextView
 
     internal var mDataManager: GeneralDataManager? = null
     internal var mRecipeManager: RecipeManager? = null
@@ -45,7 +45,7 @@ class RecipeUploadFragment : Fragment() {
         /*
         // set content of an ImageView
         final ChooseLayoutImagesAdapter mChooseLayoutImagesAdapter = new ChooseLayoutImagesAdapter(getContext());
-        mImageView.setImageResource(mChooseLayoutImagesAdapter.mImageIds[RecipeManager.getInstance().getCurrentOrCreateNewRecipe().getDocumentStyle()]);
+        mImageView.setImageResource(mChooseLayoutImagesAdapter.mImageIds[RecipeManager.getInstance().getCurrentOrNewRecipe().getDocumentStyle()]);
 
         // after all the recipe upload etc. etc.
         mDataManager = GeneralDataManager.getInstance();

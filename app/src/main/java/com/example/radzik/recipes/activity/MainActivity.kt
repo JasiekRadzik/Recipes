@@ -2,9 +2,7 @@ package com.example.radzik.recipes.activity
 
 
 import android.app.Fragment
-import android.app.FragmentTransaction
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -12,7 +10,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.view.View
+import android.view.KeyEvent
 import android.widget.ImageView
 import android.widget.Toast
 import com.example.radzik.recipes.R
@@ -39,8 +37,6 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
-import com.mikepenz.materialdrawer.model.interfaces.IProfile
 import com.mikepenz.itemanimators.AlphaCrossFadeAnimator
 import com.mikepenz.materialdrawer.util.DrawerImageLoader
 import com.squareup.picasso.Picasso
@@ -56,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
     private var mWasRecipeUploaded = false
 
-    internal var mManager: RecipeManager
+    internal lateinit var mManager: RecipeManager
 
     private var mCurrentFragmentID = 0
 
@@ -74,13 +70,13 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        myFirebaseRef!!.setAndroidContext(applicationContext)
+        // myFirebaseRef!!.setAndroidContext(applicationContext)
         myFirebaseRef = Firebase("https://recipes-309da.firebaseio.com/users/")
         mAuth = FirebaseAuth.getInstance()
 
-        GeneralDataManager.getInstance().keepSynced()
+        GeneralDataManager.instance.keepSynced()
 
-        openNextFragment(ApplicationTitleEmptyFragment())
+        openNextFragment(fragment = ApplicationTitleEmptyFragment())
 
         //Get the uid for the currently logged in User from intent data passed to this activity
         mUid = intent.extras!!.getString("user_id")
@@ -159,7 +155,7 @@ class MainActivity : AppCompatActivity() {
 
                                 // resets data held in a RecipeManager and creates new Recipe
                                 RecipeManager.instance.resetManagerInstance()
-                                RecipeManager.instance.currentOrCreateNewRecipe
+                                RecipeManager.instance.currentOrNewRecipe
                             } else if (mCurrentFragmentID != 0) {
 
                                 val builder = AlertDialog.Builder(this@MainActivity)
@@ -168,7 +164,7 @@ class MainActivity : AppCompatActivity() {
                                 builder.setPositiveButton("Create NEW") { dialog, which ->
                                     // resets data held in a RecipeManager and creates new Recipe
                                     RecipeManager.instance.resetManagerInstance()
-                                    RecipeManager.instance.currentOrCreateNewRecipe
+                                    RecipeManager.instance.currentOrNewRecipe
                                     openNextFragment(ChooseDocumentLayoutFragment())
                                 }
 
@@ -199,7 +195,7 @@ class MainActivity : AppCompatActivity() {
 
                                 // resets data held in a RecipeManager and creates new Recipe
                                 RecipeManager.instance.resetManagerInstance()
-                                RecipeManager.instance.currentOrCreateNewRecipe
+                                RecipeManager.instance.currentOrNewRecipe
                             } else if (mCurrentFragmentID != 0) {
 
                                 val builder = AlertDialog.Builder(this@MainActivity)
@@ -208,7 +204,7 @@ class MainActivity : AppCompatActivity() {
                                 builder.setPositiveButton("Create NEW") { dialog, which ->
                                     // resets data held in a RecipeManager and creates new Recipe
                                     RecipeManager.instance.resetManagerInstance()
-                                    RecipeManager.instance.currentOrCreateNewRecipe
+                                    RecipeManager.instance.currentOrNewRecipe
                                     openNextFragment(ChooseDocumentLayoutFragment())
                                 }
 
@@ -323,7 +319,7 @@ class MainActivity : AppCompatActivity() {
                 val data = dataSnapshot.getValue(String::class.java)
                 Toast.makeText(applicationContext, "" + data, Toast.LENGTH_LONG).show()
 
-                GeneralDataManager.getInstance().attachListeners(GeneralDataManager.ATTACH_ALL_LISTENERS)
+                GeneralDataManager.instance.attachListeners(GeneralDataManager.ATTACH_ALL_LISTENERS)
             }
 
             //onCancelled is called in case of any error
@@ -373,6 +369,6 @@ class MainActivity : AppCompatActivity() {
 
         private val TAG = "AndroidBash"
 
-        var contextOfApplication: Context
+        lateinit var contextOfApplication: Context
     }
 }

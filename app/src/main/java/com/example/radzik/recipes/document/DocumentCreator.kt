@@ -63,6 +63,21 @@ import java.util.Date
 
 
 class DocumentCreator {
+
+    companion object {
+
+        private var mInstance: DocumentCreator? = null
+
+        val instance: DocumentCreator
+            @Synchronized get() {
+                if (mInstance == null) {
+                    mInstance = DocumentCreator()
+                }
+
+                return mInstance as DocumentCreator
+            }
+    }
+
     private var mPdfFolder: File? = null
     var recipeFile: File? = null
         private set
@@ -83,7 +98,7 @@ class DocumentCreator {
         mManager = RecipeManager.instance
     }
 
-    fun prepareEnviromentAndwriteDocument(recipe: Recipe, activity: Activity) {
+    fun prepareEnvironmentAndWriteDocument(recipe: Recipe, activity: Activity) {
 
         mPdfFolder = File(Environment.getExternalStorageDirectory(), "recipes")
         if (!mPdfFolder!!.exists()) {
@@ -124,6 +139,17 @@ class DocumentCreator {
         val f1 = FontFactory.getFont(FontFactory.TIMES_ROMAN, 14f)
         f1.color = BaseColor.BLACK
         fontSelector.addFont(f1)
+
+        try {
+            val canvas = mPdfWriter!!.directContentUnder
+            val image = Image.getInstance(mManager.picturePath)
+            image.scaleAbsolute(PageSize.A4.rotate())
+            image.setAbsolutePosition(0.toFloat(), 0.toFloat())
+            canvas.addImage(image)
+        }
+        catch (e: NullPointerException) {
+            e.printStackTrace()
+        }
 
         // adds a header to pdf
         addRecipeHeader(recipe)
@@ -201,17 +227,5 @@ class DocumentCreator {
 
     }
 
-    companion object {
 
-        private var mInstance: DocumentCreator? = null
-
-        val instance: DocumentCreator
-            @Synchronized get() {
-                if (mInstance == null) {
-                    mInstance = DocumentCreator()
-                }
-
-                return mInstance
-            }
-    }
 }

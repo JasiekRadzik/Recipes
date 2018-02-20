@@ -78,7 +78,7 @@ class ImageEditor {
                     mInstance = ImageEditor()
                 }
 
-                return mInstance
+                return mInstance as ImageEditor
             }
     }
 

@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <ScrollView
-            android:id="@+id/main_scroll_view"
+            android:id="@+id/mainScrollView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -26,7 +26,7 @@
                 android:padding="10dp">
 
                 <com.jmedeisis.draglinearlayout.DragLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/drag_linear_layout_container"
+                    android:id="@+id/dragLinearLayoutContainer"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/background"
@@ -35,12 +35,12 @@
         </ScrollView>
 
         <include
-            android:id="@+id/hidden_layout_edit_part"
+            android:id="@+id/hiddenLayoutEditPart"
             layout="@layout/layout_create_recipe_part"
             android:visibility="gone" />
 
         <Button
-            android:id="@+id/button_add"
+            android:id="@+id/buttonAdd"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"

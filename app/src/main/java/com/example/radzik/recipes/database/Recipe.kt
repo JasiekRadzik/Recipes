@@ -18,14 +18,14 @@ class Recipe {
     var title: String? = null
     var subheading: String? = null
     var documentStyle = 0
-    var courseType = 0
+    var courseType = 99
     var list: ArrayList<EditTextPref>
-        get() = mRecipeList as ArrayList<EditTextPref>?
+        get() = (mRecipeList as ArrayList<EditTextPref>?)!!
         set(list) {
             mRecipeList = list
         }
     var mapForEditTextPrefs: HashMap<String, EditTextPref>
-        get() = mMapForEditTextPrefs as HashMap<String, EditTextPref>?
+        get() = (mMapForEditTextPrefs as HashMap<String, EditTextPref>?)!!
         set(map) {
             mMapForEditTextPrefs = map
         }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,19 +10,186 @@
         android:layout_height="match_parent"
         android:visibility="visible">
 
+        <ImageView
+            android:id="@+id/photoSelectedCrossDraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/photoSelectedCheckDraw"
+            android:layout_alignTop="@id/photoSelectedCheckDraw"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_check_box_outline_blank_24dp" />
+
+        <ImageView
+            android:id="@+id/cookbookTitleCrossDraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/cookbookTitleCheckDraw"
+            android:layout_alignTop="@id/cookbookTitleCheckDraw"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_check_box_outline_blank_24dp" />
+
+        <ImageView
+            android:id="@+id/recipeCourseTypeCrossDraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/recipeCourseTypeCheckDraw"
+            android:layout_below="@id/recipeCourseTypeTextView"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_check_box_outline_blank_24dp" />
+
+        <ImageView
+            android:id="@+id/recipeSubheadingCrossDraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/recipeSubheadingCheckDraw"
+            android:layout_alignTop="@id/recipeSubheadingCheckDraw"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_check_box_outline_blank_24dp" />
+
+        <ImageView
+            android:id="@+id/recipeTitleCheckCrossDraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/recipeTitleCheckDraw"
+            android:layout_alignTop="@id/recipeTitleCheckDraw"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_check_box_outline_blank_24dp" />
+
+        <ImageView
+            android:id="@+id/photoSelectedCheckDraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/photoTextView"
+            android:layout_alignStart="@id/cookbookTitleCrossDraw"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_check_box_24dp" />
+
+        <ImageView
+            android:id="@+id/cookbookTitleCheckDraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/recipeCourseTypeCheckDraw"
+            android:layout_alignTop="@id/cookbookTitleCheck"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_check_box_24dp" />
+
+        <ImageView
+            android:id="@+id/recipeTitleCheckDraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/recipeSubheadingCrossDraw"
+            android:layout_alignTop="@id/recipeTitleCheck"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_check_box_24dp" />
+
+        <ImageView
+            android:id="@+id/recipeCourseTypeCheckDraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/recipeSubheadingCheckDraw"
+            android:layout_alignTop="@id/recipeCourseTypeCheck"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_check_box_24dp" />
+
+        <ImageView
+            android:id="@+id/recipeSubheadingCheckDraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/recipeSubheadingCheck"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="55dp"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_check_box_24dp" />
+
+        <ImageView
+            android:id="@+id/recipeWrittenCheckDraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/recipeWrittenCrossDraw"
+            android:layout_alignTop="@id/recipeWrittenCrossDraw"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_check_box_24dp" />
+
+        <ImageView
+            android:id="@+id/recipeWrittenCrossDraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/recipeWrittenTextView"
+            android:layout_alignEnd="@id/photoSelectedCrossDraw"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_check_box_outline_blank_24dp" />
+
+        <TextView
+            android:id="@+id/cookbookTitleCheck"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/cookBookTitleTextView"
+            android:layout_below="@id/cookBookTitleTextView"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/recipeTitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/recipeTitleCheck"
+            android:layout_alignStart="@id/recipeTitleCheck"
+            android:layout_marginBottom="28dp"
+            android:text="@string/recipe_title_txt_view"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/recipeTitleCheck"
-            android:layout_width="fill_parent"
+            android:layout_width="230dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="58dp"
-            android:layout_marginTop="96dp"
+            android:layout_marginEnd="21dp"
+            android:layout_marginTop="55dp"
+            android:layout_toStartOf="@+id/recipeTitleCheckCrossDraw"
             android:textColor="@android:color/black"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/recipeSubheadingTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/recipeTitleCheck"
+            android:layout_below="@id/recipeTitleTextView"
+            android:layout_marginTop="@dimen/recipe_summary_space_30"
+            android:text="@string/recipe_subheading_text_view"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/recipeSubheadingCheck"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/recipeSubheadingTextView"
+            android:layout_below="@id/recipeSubheadingTextView"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/recipeCourseTypeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/recipeSubheadingCheck"
+            android:layout_below="@id/recipeSubheadingCheck"
+            android:layout_marginTop="32dp"
+            android:text="@string/recipe_course_type_text_viewe"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/recipeCourseTypeCheck"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/recipeCourseTypeTextView"
+            android:layout_below="@id/recipeCourseTypeTextView"
+            android:layout_marginStart="0dp"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
 
         <Button
-            android:id="@+id/buttonFinishRecipe"
+            android:id="@+id/buttonSaveRecipe"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
@@ -30,6 +198,37 @@
             android:text="@string/button_bottom_save_recipe"
             android:textColor="@android:color/white"
             android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/cookBookTitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/recipeCourseTypeCheck"
+            android:layout_below="@id/recipeCourseTypeCheck"
+            android:layout_marginTop="@dimen/recipe_summary_space_30"
+            android:text="@string/cookbook_title_txt_view"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/photoTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/cookbookTitleCheck"
+            android:layout_below="@id/cookbookTitleCheck"
+            android:layout_marginTop="42dp"
+            android:text="@string/photo_selected_text_view"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/recipeWrittenTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/photoTextView"
+            android:layout_below="@id/photoTextView"
+            android:layout_marginTop="42dp"
+            android:text="@string/recipe_written_text_view"
             android:textStyle="bold" />
 
     </RelativeLayout>
@@ -44,7 +243,7 @@
             android:id="@+id/pdfViewDisplay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toLeftOf="@+id/pdfViewDisplayScrollBar" />
+            android:layout_toLeftOf="@id/pdfViewDisplayScrollBar" />
 
         <com.github.barteksc.pdfviewer.ScrollBar
             android:id="@+id/pdfViewDisplayScrollBar"

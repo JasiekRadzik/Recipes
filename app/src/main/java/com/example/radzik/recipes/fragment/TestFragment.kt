@@ -1,11 +1,9 @@
 package com.example.radzik.recipes.fragment
 
 import android.app.Fragment
-import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,12 +46,12 @@ class TestFragment : Fragment() {
     @BindView(R.id.buttonTestRemoveRecipeFromCookbook)
     internal var mRemoveTestRecipeFromCookBook: Button? = null
 
-    internal var mManager: RecipeManager
+    internal lateinit var mManager: RecipeManager
 
     internal var mCookbookKey = ""
     internal var mRecipeKey = ""
 
-    internal var mRecipe: Recipe
+    internal lateinit var mRecipe: Recipe
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle): View? {
         val view = inflater.inflate(R.layout.fragment_test, container, false)
@@ -61,8 +59,8 @@ class TestFragment : Fragment() {
         ButterKnife.bind(this, view)
 
         mManager = RecipeManager.instance
-        mRecipe = mManager.currentOrCreateNewRecipe
-        GeneralDataManager.getInstance().attachListeners(GeneralDataManager.RECIPE_UPDATES_LISTENER)
+        mRecipe = mManager.currentOrNewRecipe
+        GeneralDataManager.instance.attachListeners(GeneralDataManager.RECIPE_UPDATES_LISTENER)
 
         val editTextPref = EditTextPref()
         editTextPref.text = "Pierwszy upload TEST"
@@ -72,7 +70,7 @@ class TestFragment : Fragment() {
 
         val x: EditTextPref
         x = editTextPref
-        mManager.currentOrCreateNewRecipe.list.add(x)
+        mManager.currentOrNewRecipe.list.add(x)
 
         val cookBook = CookBook()
         /*
@@ -96,9 +94,9 @@ class TestFragment : Fragment() {
             }
         });
  */
-        mLoadTestCookbook!!.setOnClickListener { mCookbookKey = GeneralDataManager.getInstance().uploadCookBook(activity, cookBook) }
+        mLoadTestCookbook!!.setOnClickListener { mCookbookKey = GeneralDataManager.instance.uploadCookBook(activity, cookBook)!! }
 
-        mRemoveTestRecipeFromCookBook!!.setOnClickListener { GeneralDataManager.getInstance().removeRecipeFromCookBook(mRecipe, cookBook) }
+        mRemoveTestRecipeFromCookBook!!.setOnClickListener { GeneralDataManager.instance.removeRecipeFromCookBook(mRecipe, cookBook) }
 
         mCookBookEditText!!.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {

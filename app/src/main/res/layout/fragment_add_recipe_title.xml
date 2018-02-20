@@ -30,7 +30,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/edit_text_title"
+            android:id="@+id/editTextTitle"
             android:layout_width="match_parent"
             android:layout_height="46dp"
             android:layout_alignLeft="@+id/text_view_password"
@@ -52,7 +52,7 @@
             android:layout_height="20dp" />
 
         <TextView
-            android:id="@+id/text_view_subheading"
+            android:id="@+id/textViewSubheading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="54dp"
@@ -65,7 +65,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/edit_text_subheading"
+            android:id="@+id/editTextSubheading"
             android:layout_width="match_parent"
             android:layout_height="46dp"
             android:layout_marginLeft="50dp"

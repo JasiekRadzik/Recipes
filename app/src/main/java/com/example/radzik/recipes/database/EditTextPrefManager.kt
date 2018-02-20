@@ -14,18 +14,11 @@ class EditTextPrefManager {
         val recipePartType = editTextPref.recipePartType
         val recipePartName: String? = null
 
-        if (recipePartType == ConstantsForRecipePartTypes.SHORT_DESCRIPTION) {
-            editTextPref.recipePartName = activity.resources.getString(R.string.short_description)
-
-        } else if (recipePartType == ConstantsForRecipePartTypes.INGREDIENT) {
-            editTextPref.recipePartName = activity.resources.getString(R.string.ingredient)
-
-        } else if (recipePartType == ConstantsForRecipePartTypes.HOW_TO_COOK) {
-            editTextPref.recipePartName = activity.resources.getString(R.string.how_to_cook)
-
-        } else if (recipePartType == ConstantsForRecipePartTypes.ADDITION_TO_EAT_WITH) {
-            editTextPref.recipePartName = activity.resources.getString(R.string.to_eat_with)
-
+        when (recipePartType) {
+            ConstantsForRecipePartTypes.SHORT_DESCRIPTION -> editTextPref.recipePartName = activity.resources.getString(R.string.short_description)
+            ConstantsForRecipePartTypes.INGREDIENT -> editTextPref.recipePartName = activity.resources.getString(R.string.ingredient)
+            ConstantsForRecipePartTypes.HOW_TO_COOK -> editTextPref.recipePartName = activity.resources.getString(R.string.how_to_cook)
+            ConstantsForRecipePartTypes.ADDITION_TO_EAT_WITH -> editTextPref.recipePartName = activity.resources.getString(R.string.to_eat_with)
         }
     }
 
@@ -39,7 +32,7 @@ class EditTextPrefManager {
                     mInstance = EditTextPrefManager()
                 }
 
-                return mInstance
+                return mInstance!!
             }
     }
 }
